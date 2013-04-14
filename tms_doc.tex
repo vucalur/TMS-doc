@@ -25,8 +25,9 @@
   \vspace{3ex}
   \textit{\begin{Large}codename: \codename\end{Large}} \\
 
-  \vfill
+  \vspace{2cm}
   \begin{Large}\wersja\end{Large}\\
+    \vspace{2cm}
 \end{center}
 \begin{large}
   \begin{tabularx}{\textwidth}{lXc}
@@ -67,8 +68,8 @@ Skład zespołu:\end{Large}
 \cfoot{\normalsize Strona \thepage \ z \pageref{LastPage}}
 \rfoot{\scriptsize{\wersja}}
 
-\setcounter{secnumdepth}{2}
-\setcounter{tocdepth}{2}
+%\setcounter{secnumdepth}{2}
+%\setcounter{tocdepth}{2}	% 2 - ToC will contain only subsections
 
 
 \vfill
@@ -91,9 +92,412 @@ osoby (tych osób) lub odpowiednich władz AGH.
 
 \tableofcontents
 
+
 \setcounter{page}{0}
-\chapter{Tematyka projektu}
-\section{Opis zadania}
+\chapter{Wizja}
+
+
+
+
+\section{Zarys}
+System prowadzenia zadań w projektach IT ma być w pełni samodzielną (ang. standalone)
+aplikacją webową ułatwiającą pracę w zespołach programistycznych (\href{http://en.wikipedia.org/wiki/Issue_tracking_system}{Ticket tracking system}).
+Narzędzie sposobem działania będzie przypominało istniejące systemy, np: Redmine, Trac, Jira.\\
+Użytkownicy będą mogli tworzyć zadania (ang. tickets, issues, tasks), zmieniać ich status, logować godziny.
+Narzędzie służy monitorowaniu prac nad całym realizowanym przedsięwzięciem programistycznym jaki pracy poszczególnych członków zespołu.\\
+System będzie tworzony “od zera”, nie będzie rozwinięciem istniejącej aplikacji,
+jak i nie będzie korzystał z zewnętrzych zasobów (Web Servisy, itp.).\\	
+Jako wzorce funkcjonalności jakich powinien dostarczać taki system obieramy
+istniejące rozwiązania uzupełnione o autorskie pomysły.
+Podstawą naszej koncepcji jest stworzenie aplikacji webowej, z której mogłyby korzystać różne zespoły:
+firmy, instytucje oraz, może przede wszystkim, grupy niezależnych programistów zrzeszonych
+w tworzeniu jakiegoś projektu, z szczególnym naciskiem na tworzenie tzw. otwartego oprogramowania
+(ang. open source). Dostępne na rynku rozwiązania, nawet jeśli są darmowe, wymagają uruchomienia
+aplikacji na własnym serwerze. Jest to oczywiście dużym plusem, jeśli chodzi o politykę prywatności
+i bardzo odpowiada dużym firmom i organizacjom, jednak dla wielu projektów
+(zwłaszcza w przypadku oprogramowania otwartego) takie rozwiązanie wydaje się być zbyt ciężkim,
+czasochłonnym oraz pracochłonnym. Wysiłek poświęcony na skonfigurowanie środowiska jest zbędny
+w przypadku mniejszych projektów. Znacznie lepiej byłoby móc założyć profil projektu na łatwo
+dostępnym portalu i włączyć wszystkich członków zespołu do przedsięwzięcia. Umożliwołoby to także
+łatwą organizację projektu bardzo małym zespołom, nawet grupom studentów pracyjących nad wspólnym projektem.\\
+Dodatkowym atutem byłaby jednoczesna możliwość pobrania aplikacji i wykorzystanie jej na własnym serwerze.
+Dzięki temu oprogramowanie byłoby postrzegane jako odpowiadające różnym wymogom bezpieczeństwa,
+np. dzięki ukryciu wszystkich zasobów firmy za firewall’em.
+
+
+
+
+\section{Motywacja}
+Motywacją naszego pomysłu było zetknięcie się z dużymi systemami do zarządzania projektami:
+\begin{description}
+	\item[IBM Rational Team Concert]
+		Jest to komercyjny projekt firmy IBM. Bardzo drogi,
+		ale także o bardzo dużych możliwościach.
+		Łączy zarządzanie projektem w metodologiach “zwinnych” (ang. “agile”)
+		z systemem kontroli wersji. IBM udostępnia specjalną wersję
+		Eclipse IDE (Rational Team Concert Eclipse) oraz wtyczki do zwykłego Eclipse’a.
+		Pozwala na bardzo przejrzyste łączenie zadań z kodem w projekcie.
+		Możliwości jest bardzo dużo. Najlepszym przykładem jest opcja zaznaczenie
+		fragmentu kodu i sprawdzenia , przez kogo został dodany lub zmodyfikowany
+		oraz częścią jakiego zadania były te zmiany. Wadą oprogramowania RTC jest
+		przede wszystkim jego cena. Ponadto wymaga dużego nakładu administracyjnego,
+		ponieważ ma wiele możliwości i parametrów do skonfigurowania.
+		Nadaje się zatem tylko dla bardzo dużych firm. 
+	\item[Redmine]
+		Redmine jest darmowym i otwartym, webowym narzędziem do zarządzania projektami
+		i śledzenia błędów. Zawiera kalendarz i wykresy Gantta do wspomagania wizualnego
+		przedstawiania projektów i ich terminów. Obsługuje wiele projektów.
+		Redmine zapewnia zintegrowane funkcje zarządzania projektami, śledzenie błędów
+		i wsparcie dla różnych systemów kontroli wersji. Wyraźny wpływa na Redmine’a
+		miał projekt \textbf{Trac}, pakiet o podobnych cechach. Redmine jest napisany
+		z wykorzystaniem Ruby on Rails i wymaga uruchomienia na własnym serwerze.
+		Jest to właśnie pierwszy aspekt, w któym chcemy wprowadzić pewną nowość
+		przez skoncentrowanie usług na jednym portalu. Drugim elementem, gdzie
+		chcemy wprowadzić innowacje, jest zasób narzędzi, gdyż Redmine nie oferuje
+		wszystkich przydatnych sposobów graficznej prezentacji przebiegu projektu.
+		Ogromną zaletą projektu Redmine jest oczywiści jego dostępność bez żadnych opłat
+\end{description}
+Są to dwa największe systemy, z którymi spotkaliśmy się podczas praktyk zawodowych.
+Jakiś czas później, rozpoczynając nowe projekty uczelniane, szukaliśmy podobnych,
+lecz lżejszych (i w przeciwieństwie do IBM Rational Team Concert - darmowych),
+rozwiązań. Istnieją pewne szybkie w użyciu portale do prowadzenia projektów,
+jednak nie są one skoncentrowane stricte na projektach informatycznych,
+dlatego brakuje im wielu przyfatnych dla programistów funkcjonalności.
+W obsługę zadań (ang. “tasks”, “issues”) są wyposażone niektóre hostingowe
+serwisy internetowe przeznaczone dla programistów korzystających z kontroli wersji,
+zwłazcza oprogramowania Git, takie bittbucket.org bądź github.org.
+Ich wadą jest przede wszystkich niezbyt szeroki zakres funkcjonalności, na przykład:
+\begin{itemize}
+	\item	brak wyraźnego połączenia zadań z kodem (bitbucket)
+	\item	brak możliwości oznaczania różnych parametrów zadań,
+			np: priorytet, zagrożenie związane z błędem lub brakiem zaimplementowanej funkcjonalności (zwłaszcza github).
+	\item	brak możliwości oznaczania zadań jako powiązane (np. relacja “rodzic - dziecko”)
+\end{itemize}
+Dodatkową wadą jest też oczywiście powiązanie danych projektu
+(zadania, komentarzy itd.) z konkretnym repozytorium!
+Z jednej strony jest oczywiście wyjątkowo mało elastyczne w pracy,
+ale przede wszystkim pojawia się olbrzymi problem, jeśli chcemy przeniść
+projekt do innego repozytorium (np. zrezygnować z otwartości projektu
+a tylko taką opcję udostępnia github). Tracimy wówczas całą historię projektu.
+Wszystkie zadanie, komentarze, wszystkie dane. Mimo to, wiele niedużych
+zespołów wybiera zarządzanie projektami na takim serwisie, gdyż jest
+to dla nich najprostsze wyjście. Chcielibyśmy, aby nasza aplikacja była
+rozwiązaniem takiego problemu. Aby była elastyczna i prosta w użyciu.
+Aby rozpoczęcie pracy nad nowym projektem trwało dosłownie chiwlkę.
+
+
+
+
+\section{Innowacyjność}
+Uważamy, że chociaż istnieje kilka rozwiniętych przedsięwzięć,
+zajmujących się tą tematyką, wciąż można znaleźć luki do uzupełnienia
+w puli tych rozwiązań. Naszym celem nie jest mierzenie w kompleksowość
+usług na poziomie IBM Rational Team Concert, ale dodanie paru pomysłów
+do rozwiązań w stylu oprogramowania Redmine. Chodzi głównie o wizualizację
+parametrów pracy nad projektem, zwłaszcza tzw. “burn down chart” (brak popularnej polskiej nazwy).
+Jest to bardzo przydatny wykres do monitorowania postępu prac w projekcie.
+Analogicznym wykresem jest wykres przedstawiający ilość spodziewanych zgłaszanych
+w czasie defektów z jednoczesną linią obrazującą rzeczywistą ilość raportowanych błędów.
+Jest to bardzo ważne w technikach zwinnych (ang. “agile”) do analizy postępu i jakości pracy.
+
+
+
+
+\section{Rodzaj aplikacji}
+Nasza aplikacja, jak już wcześniej wspomnieliśmy, byłaby aplikacją webową z własną bazą danych.
+Ważną cechą będzie możliwość uruchomienia centralnego serwisu internetowego,
+z którego będą mogli koszystać wszyscy programiści na świecie. Będą mogli zakładać wiele projektów.
+Z drugiej strony możliwe będzie pobranie aplikacji postawienie serwera z własną kopią serwisu,
+dzięki czemu użytkownik będzie mógł ukryć wszystkie dane we własnej sieci i nie będzie
+uzależniony od obciążenia centralnego serwisu. Jest dodatkowo istotnym czynnikiem
+przy wyborze technologii, w której zaimplementujemy system. Musi być możliwe bardzo
+lekkie uruchomienie środowiska (jak np. w Django bądź Play! Framework, przez wydanie
+prostej komendy “run” w terminalu), ale jednocześnie muszą być dostępne wielkoskalowe
+i wydajne rozwiązania, dostosowane do używania aplikacji przez tysiące użytkowników.
+Musimy zatem wybrać technologię wspierającą oba warianty.
+
+
+
+
+\section{Szczegółowa koncepcja}
+Użytkownik będzie korzystał w przeglądarce WWW z webowego interfejsu aplikacji.
+Odwiedzając stronę, będzie miał początkowo do czynienia z funkcjonalnością opisaną w następującym podpunkcie.
+
+\subsection{Pierwsze kroki użytkownika w aplikacji}
+Wchodząc na stronę internetową, użytkownik zobaczy panel logowania.
+Niezalogowany użytkownik będzie miał dostęp praktycznie tylko do tej podstrony.
+Ewentualnie, będzie miał kilka dostępnych zakładek z informacjami o produkcie,
+danymi kontaktowymi, czy też z formularzem rejestracyjnym. Samo istnienie funkcjonalności
+rejestracji użytkowników jest do rozpatrzenia. Można rozważyć udostępnienie uwierzytelniania
+poza naszym serwisem, na przykład za pomocą kont mailowych na gmail’u.
+
+\subsection{Organizowanie nowego projektu}
+Zalogowany użytkownik będzie mógł założyć nowy projekt. Będzie mógł podać
+różne dane opisowe tego projektu: wykorzystywane technologie, przewidywany
+czas realizacji itp. Ponadto, będzie mógł zapraszać osoby do projektu
+a także przyjmować wnioski użytkowników o nadanie praw do wprowadzania zdarzeń w projekcie. 
+
+\subsection{Kamienie milowe}
+Ważnym zagadnieniem są kamienie milowe. Do nich będą przyporządkowywane zadania.
+Kamienie milowe będą miały swoje daty realizacji. Można przewidzieć hierarchiczną
+strukturę zbioru kamieni milowych. Dzięki temu będzie można przykładowo wyznaczyć
+półroczny kamień milowy w projekcie i dodatkowo podzielić go na dwu tygodniowe
+sprinty, które de facto też będą kamieniami milowymi.
+
+\subsection{Dodawanie nowych zadań}
+Użytkownik posiadający uprawnienia do zmian danym projekcie,
+będzie mógł dodawać do projektu nowe zadanie. Przewidujemy podstawowe typy zadań, takie jak: 
+\begin{itemize}
+	\item	zwykłe zadanie
+	\item	defek
+	\item	test
+	\item	dokumentacja
+	\item	ulepszenie
+\end{itemize}
+Innymi parametrami zadania będzie przewidziany czas (lub data) jego wykonania,
+kamień milowy, do którego należy, osoba, która wykonuje to zadanie.
+Zadanie będzie także miało swój stan: początkowe będzie otwarte bądź zamknięte.
+Później można się także zastanowić nad bardziej szczegółowymi możliwościami.
+
+\subsection{Przeglądanie zadań}
+Użytkownik będzie mógł przeglądać zadania z danego projektu.
+Będą one wyświtlone w formie interaktywnej listy z możliwością sortowania
+oraz filtrowania po podstawowych parametrach: na przykład po kamieniach milowych,
+po priorytecie, statusie itp. W tym samym widoku będzie można dodać nowe zadanie
+lub usunąć inne. Ten element jest podstawą przejrzystości aplikacji i musi
+być wykonany czytelnie, udostępniając intuicyjny i czytelny interfejs.
+
+\subsection{Edytowanie zadania}
+Edytowanie zadań obejmować będzie dodawanie komentarzy oraz linków do kodu.
+Będzie można zmieniać parametry zadania, takie jak przewidywana data oddania,
+osoba pracująca nad zadaniem. W szczególności będzie też można zakończyć zadanie,
+zamykając je poprzez wciśnięcie odpowiedniego przycisku.
+
+
+
+
+\section{Użyte technologie}
+Całość aplikacji będzie zrealizowana w technologiach Javowych i pokrewnych.
+
+\subsection{Warstwa persystencji}
+\subsubsection{Baza danych}
+Wybór systemu zarzadzania bazą danych jest prosty: zostanie użyta baza PostgreSQL,
+ze względu na:
+\begin{itemize}
+	\item	darmowość narzędzia
+	\item	rozbudowane funkcjonalności (w porównaniu do “lekkich” DMBS, jak np: MySQL, SQLite, HSQL) - nie odstępuje produktom komercyjnym
+	\item	dobra wydajność (ustępuje jedynie rozwiązaniom komercyjnym, np: Oracle DB)
+	\item	bardzo dobra kompatybilność z frameworkami ORM
+	\item	dopracowane i bogate w funkcjonalności narzedzie graficzne do bezpośredniego zarządzania bazą - pgadmin3
+\end{itemize}
+\subsubsection{Framework ORM}
+Zostanie wykorzystany interfejs JPA, zapięty “pod maską” do fremeworku
+konkretnego (JPA providera) - Hibernate. Głównie ze względu na wysoką popularność
+(co za tym idzie pomoc community), wydajność oraz dojrzałość rozwiązania.
+
+\subsection{Serwer aplikacji - kandydaci}
+\begin{itemize}
+	\item	Glassfish
+	\item	Tomcat
+	\item	TomEE
+\end{itemize}
+Wybierając serwer będziemy kierowali się prostotą obsługi, popularnością, jakością dokumentacji.\\
+Wybór serwera aplikacji może zostać dokonany później.
+
+\subsection{Warstwa prezentacji - kandydaci}
+\begin{itemize}
+	\item	\textbf{Spring MVC}
+	\item	\textbf{GWT / Vaadin / GXT}\\
+			Rodzina technologii (GWT jest jej prekursorem, GXT oraz Vaadin to rozszerzenia)
+			pozwalająca tworzyć bogate aplikacje webowe (RIA) bezpośrednio w języku Java,
+			korzystając z wygodnego API.\\
+			Taki wysokopoziomowy kod pośredni jest następnie kompilowany przez framework do
+			technologi docelowej - JavaScript.\\
+			Warto wspomnieć, iż GXT i Vaadin różnią się technologicznie - Vaadin realizuje
+			koncepcję cienkiego klienta, GXT - grubego (większość akcji jest kompilowana
+			do dynamicznego JavaScriptu przeznaczonego na przeglądarkę klienta).
+	\item	Play! framework (wersja dla Javy)
+\end{itemize}
+W warstie prezentacji zostało wyszczególnionych wiele kandydatów
+do bycia technologią docelową. Po głębszym zapoznaniu się z technologiami i wstępnych próbach
+zostanie podjęta decyzja.\\
+Rozważamy również utworzenie aplikacji w frameworku “lekkim”, np: Django, Ruby On Rails.\\
+Niezależnie od wybranej w tej w warstwie technologii, będzie ona bazowała
+(będzie zrealizowana “pod maską”) na technologii JavaScript, dotyczy to również
+technologii opartych na językach innych niż Java.
+
+\subsection{Warstwa prezentacji - ostateczny wybór}
+Po szczegółowej analizie przedstawionych wyżej możliwości, zdecydowaliśmy,
+że zrealizujemy projekty w technologii Play! Powody naszego wyboru są następujące:
+\begin{itemize}
+	\item	Framework Play! jest prosty i nowoczesny. Jest uważany za przełom w świecie Javy.
+			Łączy wydajność z prostotą. Jest postrzegany jako bardzo przyjazny dla programistów.
+			Proponuje bardzo ciekawe rozwiązania, które już na pierwszy rzut oka pokazują,
+			że technologia umożliwia pisanie krótszego i bardziej czytelnego kodu w najbardziej
+			popularnym języku programowania - Javie. Jest to osiągnięte przez rezygnację
+			z pewnych standardów programowania w Javie.
+	\item	Możliwości uruchomienia serwera aplikacji są bardzo elastyczne i dostosowane
+			do naszych (wyżej opisanych) potrzeb. 
+\end{itemize}
+Framework Play! jest dostępny w dwóch wersjach: dla języka Scala (pracującego na wirtualnej
+maszynie Javy) oraz dla samej Javy. Zdecydowaliśmy się na tę drugą opcję, ponieważ:
+\begin{itemize}
+	\item	Można łatwo wykorzystywać inne bibloioteki i technologi, chociażby takie jak Spring
+	\item	Sami mamy większe doświadczenie w Javie
+	\item	Łatwiej jest korzystać z technologi wykorzystywanych przez Play!, np. Hibernate
+	\item	Biorąc pod uwagę perspektywę rozbudowy systemu, łatwiej będzie wdrożyć się nowym programistom,
+			jeśli aplikacja będzie napisana w Javie
+\end{itemize}
+
+
+\section{Plan działania}
+todo image, but first gantt update
+Projekt będzie realizowany w metodologii lekkiej - będziemy chcieli początkowo
+zrealizować jedynie podstawowe funkcjonalności takiego systemu, stopniowo dobudowywyjąc
+nowe i zwiększając możliwości starych.\\
+Pozwoli nam to na lepszą estymację czasu potrzebnego na zrealizowanie dalszych funkcjonalności,
+jak i czasu realizacji całego przedsięwzięcia.
+
+
+
+
+\section{Wymagania -- etap 1}
+Etap ma za zadanie dostarczenie stosunkowo szybko “czegoś działającego” do klienta,
+jak również potwierdzenie wykonalności całego zadania.\\
+Jednym z ważnych podcelów tego etapu będzie decyzja co do używanej technologii.
+\paragraph{Funkcjonalne}
+\begin{itemize}
+	\item	W pełni działający mechanizm kontroli dostępu oraz podział użytkowników na role
+	\item	formularz tworzenia nowego taska
+	\item	formularz edycji istniejącego taska
+	\item	lista --- widok wszystkich tasków, z ew. sortowaniem
+\end{itemize}
+\paragraph{Niefunkcjonalne}
+\begin{itemize}
+	\item	brak autentykacji, brak kontroli dostępu do systemu (w zależności od terminu
+			oddania pierwszego prototypu możliwość zrezygnowania z tego ograniczenia)
+	\item	system działający już na własnej bazie
+	\item	niekoniecznie gotowa konfiguracja środowiska produkcyjnego --- pokaz na środowisku deweloperskim
+	\item	brak testów jednostkowych oraz akceptacyjnych, brak podejścia TDD na tym etapie
+\end{itemize}
+
+
+
+
+\section{Wymagania -- etap 2}
+\paragraph{Funkcjonalne}
+\begin{itemize}
+	\item	podział tasków na projekty, widok projektów
+	\item	filtry w liście wszystkich tasków
+	\item	widok użytkowników systemu = pracowników danego projektu
+	\item	dodawanie komentarzy do taska
+\end{itemize}
+\paragraph{Niefunkcjonalne}
+\begin{itemize}
+	\item	autentykacja
+	\item	bardziej rozwinięta warstwa pośrednia (middleware)
+	\item	testy jednostowe do niektórych funckjonalności
+	\item	dopracowane style css aplikacji
+\end{itemize}
+
+
+
+
+\section{Przykładowe dalsze możliwości rozbudowy}
+Temat prowadzenia projektów jest bardzo szeroki, dlatego nasz projekt ma ogromne możliwości
+rozbudowy w przyszłości. Część z przedstawionych pomysłów zostanie zrealizowana.
+Nic nie stoi na przeszkodzie, aby pozostałe propozycje zostały kiedyś zrealizowane przez
+inne zespoły, bądź przez nas w ramach innych przedmiotów. W skrócie:
+\begin{itemize}
+	\item	cykl życia tasków, np: new $\rightarrow$ assigned $\rightarrow$ in progress $\rightarrow$ rejected
+			z walidacją poprawności obieranych przez taski stanów
+	\item	dodatkowe klasyfikowanie tasków, np: priorytet, tagowanie numerem podgrania, własne tagi
+	\item	raportowanie czasu do poszczególnych tasków
+	\item	miesięczne statystyki czasu
+	\item	hierarchia tasków (rodzic, dziecko)
+	\item	estymaty czasowe, wykresy:
+			\begin{itemize}
+				\item	\href{http://www.youtube.com/watch?v=XU0llRltyFM&t=4m29s}{Burndown chart}
+				\item	monitoring ilości tasków - podział na otwarte i zamknięte (analogcznie jak jest to zrealizowane w narzędziu JIRA:
+						\href{https://confluence.atlassian.com/download/attachments/185729486/gadgets-charting-created-vs-resolved.png?version=2&modificationDate=1350347163816&api=v2}{link})
+			\end{itemize}
+	\item	powiadamianie email, kanały RSS
+	\item	zaawansowany interfejs graficzny, np: avatary użytkowników, itp.
+\end{itemize}
+
+
+\subsection{Organizowanie nowego projektu}
+Mając na uwadze potencjalne możliwości rozszerzania projektu w przyszłości,
+warto przewiedzieć możliwość dodawania zespołów w projekcie(np. zespół programistów,
+testerów bądź bardziej szczegółowy podział). Można również dodać możliwość wyznaczania
+w projekcie komponentów lub obszarów. Dalej idąc, można przewidzieć opcję wyznaczenia osoby
+odpowiedzialnej za komponent czy też obszar. Ułatwia do współpracą i przyspiesza uzyskania
+pomocy w razie wątpliwości, kiedy to inny pracownik pracuje nad tym obszarem projektu.
+Ciekawym urozmaiceniem jest także stworzenie możlwiwości dodawania własnych tagów dla projektów.
+Przykładowo, jeśli projekt ma wdrożony w najbliższej przyszłości, część zadań można oznaczyć tagiem,
+sugerującym, że zadania te są równie ważne jak pozostały, jednak z pewnych względów przewiduje się ich
+realizację dopiero w kolejnej wersji produktu.
+
+
+\subsection{Kamienie milowe}
+Kamienie milową są ważną jednostką organizacyjną projektu, dlatego warto wzbogacić je o dodatkowe
+wizualizacje i diagramy. Przykładowo procent wykonania przewidzianych zadań itp.
+
+
+\subsection{Dodawanie nowych zadań}
+Ważnym dodatkiem jest stworzenie hierarchicznej budowy zadań.
+Tak, aby można było oznaczyć inne zadanie jako rodzic nowego zadanie itp. Możliwe jest
+wzbogacenie ilości stanów zadania (np. nowe, oczekujące, w trakcie pracy itp.) Poza tym,
+jeśli projekt będzie posiadał swoje obszary lub komponenty, to również zadanie mogłoby mieć
+przyporządkowan obszar lub komponent, którego dotyczy. Mogłoby także istnieć dodatkowe pole
+na zespół, który ma się zająć tym zadaniem. Dzięki temu odpowiednie osoby szybciej je zobaczą,
+natomiast te, które nie mają się nim zajmować, być może w ogóle nie zwrócą na nie uwagi,
+ponieważ będą tylko patrzeć na własną kolejkę zadań. Dodatkowo, można w zadaniu przewidzieć
+dodatkowe pole na osobę pierwszego kontaktu, byłby to np. programista, która niedawno zajmował
+się podobnymi sprawami, ale nie jest odpowiedzialny za dany obszar lub komponent, albo osoba mają
+duże doświadczenie w powiązanej z zadaniem technologii.
+
+
+\subsection{Przeglądanie nowych zadań}
+Udostępnienie w systemie dodatkowych atrybutów zadań pozwoli na wzbogacenie srotowania i filtrowania
+o te parametry. Można także umożliwić użytkownikom tworzenie własnych, nazwanych kolejek zadań
+(prywatnych lub dla całego projektu). Przykładowo, główny architekt systemu dodałby nazwaną kolejkę
+“najważniejsze zadania”, która pokazywałaby wszystkie zadania o najwyższym priorytecie, największym
+zagrożeniu dla projektu oraz przeznaczący na bieżący kamień milowy (np. sprint).
+
+
+\subsection{Edytowanie zadania}
+Podobnie, jak w poprzednich podpunktach, tutaj także możliwości będą rozbudowane wraz z rozbudową
+funkcjonalności systemu oraz przybywaniem nowych właściwości zadań. Dodatkowo, można wprowadzić dodatkowe
+stany cyklu życia zadania, takie jak “potrzebuję informacji” (np. deweloper oznacza tak zadanie
+i przypisuje je do testera, który zgłosił defekt, aby udzielił bardziej szczegółowej informacji)
+oraz “Rozwiązane”, do któego z kolei można będzie przydzielić dodatkowe informacje (np. oznaczyć,
+że to zadanie było duplikatem innego zadanie i podać powiązane zadanie). Można także przewidzieć
+dodawania linków do zmian w kodzie wprowadzonych wraz z pracą nad tym zadaniem (np. link do commit’u
+na githubie). W bardziej zaawansowanej wersji można dobudować bardziej profesjonalny \textbf{moduł integracj
+iz systemami kotroli wersji}.
+
+
+\subsection{Nowe narzędzie w projekcie}
+Jeśli system osiągnie kiedyś wysoki poziom rozwinięcia i zaawansowanie, co oznacza zaimplementowanie
+w zasadzie wszystkich funkcjonalności wspomnianych w powyższych podpunktach, będzie można zastanowić
+się nad dodaniem kolejnych możliwości, już na zasadzie osobnych narzędzi. Podajemy kilka przykładów,
+jakie mogłyby to być programy. Propozycje są bardzo luźne i nie zastanawialiśmy się, jak bardzo
+złożone byłyby to projekty:
+\begin{itemize}
+	\item	Wtyczka do Eclipse’a (lub innego popularnego IDE)
+	\item	Zaawansowana synchronizacja z systemem kontroli wersji (być może zsynchronizaowana z wtyczką do IDE)
+	\item	Aplikacja do obsługi repozytorium w stylu Tortoise Git / Tortoise SVN, umożliwiające dostęp do
+			repozytorium z jednoczesnym podpięciem do naszego systemu zarządzania zadaniami
+	\item	Narzędzie linii poleceń analogiczne do powyższego
+\end{itemize}
+
+
+
+
+
+
+
 
 
 \appendix
