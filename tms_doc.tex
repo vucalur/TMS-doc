@@ -564,48 +564,98 @@ jest jest to rozwiązanie w duchu "\emph{out of the box}"}\de
 Nasz system nie będzie konfigurowalny w sposób w jaki konfigurowalne są dwa systemy przedstawione wyżej,
 tracimy na uniwersalności, za to użytkownik nie zostaje zniechęcony trzystustronową dokumentacją
 samego narzędzia oraz godzinami potrzebnymi na skonfigurowanie systemu do własnych potrzeb.\\
-Zamiast tego chcemy dostarczyć produkt, który z domyślnymi ustawieniami adresuje potrzeby dużej rzeszy małych zespołów.
-\begin{description}
-	\item[Role użytkowników]
-		Analogicznie do opisanej wyżej instalacji Redmine'a:
-		\begin{itemize}
-			\item	związana zarządzaniem systemem: administrator <<<<<< wogóle udostępniać taką rolę ? moim zdaniem nie,
-					tylko admina (adminów) poszczególnego projektu
-			\item	role pełnione przez użytkownika w danym projekcie, np:  developer, tester, manager
-		\end{itemize}	związaną z zarządzaniem 
-		Użytkownik i role są osobnymi bytami - użytkownik może mieć wiele ról, różne w różnych projektach.\\
-		Użytkownik może być zarówno administratorem systemu jak i pełnić inne role w projektach.
-	\item[Uprawnienienia użytkowników]
-		Administratorzy mają nieograniczone prawa -- mogą np:zarządzać projektami nieutworzonymi przez siebie,
-		czy też usuwać konta innych użytkowników, w tym administratorów.\je
-		Każdy użytkownik może tworzyć projekty <<<<<< właśnie: będzie więcej bujania się jak robimy aplikację wieloskalową
-		(każdy się może rejestrowac mailem, robić sobie projekty, itp.) także trzeba tutaj kwestie uprawnień dobrze przemyśleć
-		żebyśmy potem nie klepali czegoś kiepskiego bo się szybko zrobi fuckup.\\
-		Myślę że sensownie będzie zrobić coś jak bitbucket i przełożyć to na język tasków:\\
-		repo = projekt
-		na bb może być kilku adminów 1 repo 
-	\item	\ldots
-\end{description}
+Zamiast tego chcemy dostarczyć produkt, który z domyślnymi ustawieniami adresuje potrzeby dużej rzeszy małych zespołów.\te
+Wizja funkcjonalność dla pierwszej iteracji:
+\subsection{Logika aplikacji}
+\subsubsection{Konta użytkowników}
+\begin{itemize}
+	\item	System swoim działaniem będzie przypominał serwisy do hosting kodu źródłowego, np: bitbucket, github.
+	\item	Każdy będzie mógł założyć konto oraz założyć swój projekt.
+			Logowanie na nieistniejący login jest traktowane jako rejestracja.
+	\item	Właściciel będzie mógł zaprosić do pracy nad projektem innych użytkowników.
+	\item	Role i użytkownicy są oddzielnymi bytami -- role danego użtkownika są osobne dla każdego projektu.
+			Użytkownik może nie mieć żadnych roli do danego projektu.
+	\item	Nie istnieje rola administratora systemu.
+\end{itemize}
+
+\subsubsection{Role Użytkowników}
+\begin{itemize}
+	\item	Brak podziału na role tester, developer, itp. w kontekście projektu.
+			Jeśli jest potrzeba przetestowania pewnej funkcjonalności spisuje się na to osobnego taska,
+			osoba go realizująca jest tym samym \emph{testerem} tej funkcjonalności.
+	\item	Właściciel projektu jest jego administratorem. Administratorzy projektu mogą nadawać innym
+			użytkownikom w projekcie rolę administratora.
+	\item	Administrator może odebrać uprawnienia do projektu innym użytkownikom, w tym administratorom,
+			także sobie. Wyjątkiem jest właściciel projektu: nie mogą mu być odebrane prawa administratora danego projektu.
+	\item	Jest przetrzymywana i wykorzystywana informacja o tym kto dany projekt założył (\emph{właściciel})
+\end{itemize}
+
+\subsubsection{Cykl życia tasków}
+Jest stały i określony z góry przez twórców aplikacji
+
+\subsubsection{Prawa dostępu}
+\begin{itemize}
+	\item	Wszystkie projekty są prywatne - prawa odczytu mają jedynie użytkownicy zaproszeni
+	\item	Zapraszać użytkowników mogą jedynie administratorzy danego projektu.
+	\item	Użytkownicy mogą edytowac wszytkie zadania w danym projekcie, także nie swoje
+	\item	Istnieje widok przepracowanego czasu pracy przez danego pracownika.\\
+			Każdy ma do niego wgląd, nie tylko dany pracownik
+\end{itemize}
+
+\subsubsection{Taski}
+\begin{itemize}
+	\item	Brak podziału na role tester, developer, itp. w kontekście projektu.
+			Jeśli jest potrzeba przetestowania pewnej funkcjonalności spisuje się na to osobnego taska,
+			osoba go realizująca jest tym samym \emph{testerem} tej funkcjonalności.
+	\item	Właściciel projektu jest jego administratorem. Administratorzy projektu mogą nadawać innym
+			użytkownikom w projekcie rolę administratora.
+	\item	Administrator może odebrać uprawnienia do projektu innym użytkownikom, w tym administratorom,
+			także sobie
+	\item	Jest przetrzymywana i wykorzystywana informacja o tym kto dany projekt założył (\emph{właściciel})
+	\item	Doliczać godziny do danego tasku może tylko jego wykonawca
+	\item	Task ma tylko i wyłącznie jednego wykonawcę
+\end{itemize}
+
+
+\subsection{Interfejs graficzny}
+Będą dostępne następujące widoki:
+\begin{itemize}
+	\item	Lista projektów użytkownika
+	\item	Lista tasków w projekcie
+	\item	Panel administracji projektem, np: zapraszanie użytkowników,
+			nadawanie zaproszonym użytkownikom praw administratora
+	\item	Widok taska z komentarzami
+	\item	Edycja taska, dodawanie komentarza
+	\item	Widok przepracowanych godzin przez danego pracownik projektu
+\end{itemize}
 
 
 
 
 
-\appendix
-\chapter*{Zawartość płyty CD}
-\begin{description}
-	\item[plik dokuentacja.pdf]	 --- plik z tą dokumentacją (dodatkowo dokumentacja jest oddawana w formie drukowanej)
-	\item[folder knabees]	 --- folder z kompletnym kodem źródłowym aplikacji
-	\item[plik knabees-1.0-jar-with-dependencies.jar]	 --- plik jar zbudowanej aplikacji Javowej
-	\item[pokaz.avi]	 --- krótki filmik demonstrujący działanie aplikacji
-	\item[folder tests]		--- folder z danymi wejściowymi, oraz wykresami dla przeprowadzonych testów
-\end{description}
+
+
+
+
+%\appendix
+%\chapter*{Zawartość płyty CD}
+%\begin{description}
+%	\item[plik dokuentacja.pdf]	 --- plik z tą dokumentacją (dodatkowo dokumentacja jest oddawana w formie drukowanej)
+%	\item[folder knabees]	 --- folder z kompletnym kodem źródłowym aplikacji
+%	\item[plik knabees-1.0-jar-with-dependencies.jar]	 --- plik jar zbudowanej aplikacji Javowej
+%	\item[pokaz.avi]	 --- krótki filmik demonstrujący działanie aplikacji
+%	\item[folder tests]		--- folder z danymi wejściowymi, oraz wykresami dla przeprowadzonych testów
+%\end{description}
 
 \addtocounter{page}{-1}
 
 \begin{thebibliography}{9}
 \bibitem{redmine}
 	\href{http://www.redmine.org/projects/redmine/wiki/}{Redmine - Strona Wiki}
+\bibitem{gwt}
+	\href{https://developers.google.com/web-toolkit/}{Google Web Toolkit}
+\bibitem{vaadin}
+	\href{https://vaadin.com/book/vaadin7/-/page/architecture.html}{Vaadin Architecture}
 \end{thebibliography}
 
 
