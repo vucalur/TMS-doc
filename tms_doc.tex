@@ -500,7 +500,15 @@ złożone byłyby to projekty:
 \chapter{Szczegóły działania (weź może jakąś lepszą nazwę daj na ten rozdział)}
 \section{Przegląd istniejących rozwiązań}
 \subsection{IBM Rational Team Concert}
-\ldots
+Narzędzie IBM RTC oferuje bardzo szerokie możliwości administracji i zarządzania projektem. Jeśli natomiast chodzi o interesujące nas funkcjonalności, Rational Team Concert ma następujące właściwości:
+\begin{itemize}
+	\item	Użytkownik widzi tylko te projekty, które zostały mu udostępnione przez administratorów projektów. Wcześniej musiał się zalogować. RTC udostępnia wiele mechanizmów uwierzytelniania użytkowników (np. LDAP, osobna baza danych, OAuth itp.)
+	\item	Użytkownik otrzymywał prawo dostępu do projektu wówczas, gdy dostał zaproszenie od administratora.
+	\item	Użytkownik, w ramach przynależności do projektu, mógł należeć do jednego z zespołów pracujących w projekcie. Można zabronić pracownikom jednego zespołu przypisywania się do zadań przeznaczonych dla innego zespołu, a nawet oglądania tych zadań. Takie restrykcje sprawdzają się w bardzo dużych projektach.
+	\item	Mając dostęp do zadania, każdy mógł dodawać komentarze.
+	\item	Pewne inne atrybuty zadania (np. priorytet, powiązane komponenty itp.) mogą być modyfikowane przez wszystkich pracowników projektu lub przez wybraną ich część, na przykład: dla zadań będących własnością zespołu "A", których termin oddania jest krótszy niż tydzień, priorytet mogą zmienić tylko menedżerowie i administrator projektu. Daje to oczywiście duże możliwości, ale jednocześnie jest bardzo skomplikowane.
+	\item	Zamknąć zadanie może jego właściciel lub inna upoważniona osoba, jeśli zadanie było oznaczone jako "completed"(ukończone). Było to ba przykład przydatne, gdy ktoś skończył zadanie, ale nie dostał jeszcze zgody na dostarczenie kodu i właśnie wybiera się na urlop. Często tą opcję wykorzystują studenci, których często nie ma w pracy np. cztery dni pod rząd.
+\end{itemize}
 
 \subsection{Redmine}
 \uwaga{Poniżej przedstawiono jedynie opis poszczególnej instalacji i konfiguracji systemu Redmine
