@@ -1,0 +1,130 @@
+\documentclass[a4paper,12pt,notitlepage]{mwrep}
+%%\documentclass[polish,11pt,a4paper,twosides]{article}
+%%%\usepackage{fullpage}
+
+\usepackage{./mystyle}
+
+\begin{document}
+
+% footer only for title page:
+\newcommand{\cfoottext}{Kraków, \today}
+\renewcommand{\footrulewidth}{0.4pt}
+\cfoot{\cfoottext}
+
+\begin{titlepage}
+\begin{center}
+  \resizebox{\textwidth}{!}{\mbox{AKADEMIA GÓRNICZO-HUTNICZA}}\\
+  \vspace{2ex}
+  \resizebox{\textwidth}{!}{\mbox{Wydział Informatyki, Elektroniki i Telekomunikacji}}\\
+  \vspace{4ex}
+  \includegraphics[scale=0.15]{images/agh_crop.pdf} \\
+  \vspace{4ex}
+  \begin{large}KATEDRA INFORMATYKI\end{large} \\
+  \vspace{8ex}
+  \textbf{\begin{Huge}System prowadzenia zadań w projektach IT\end{Huge}} \\
+  \vspace{3ex}
+  \textit{\begin{Large}codename: \codename\end{Large}} \\
+
+  \vfill
+  \begin{Large}\wersja\end{Large}\\
+\end{center}
+\begin{large}
+  \begin{tabularx}{\textwidth}{lXc}
+    \textit{Kierunek, rok studiów} &  & \textit{ } \\
+    \hspace{3em}Informatyka, rok III &  &  \\
+    \textit{Przedmiot} &  & \\
+	\multicolumn{3}{l}{\hspace{3em}Inżynieria Oprogramowania} \\
+    \textit{Prowadzący przedmiot} &  & \textit{rok akademicki:} \hfill 2012/2013\\
+    \hspace{3em}\minibox{dr inż. Małgorzata Żabińska-Rakoczy\\dr inż. Jarosław Koźlak} &  & \textit{semestr:} \hfill 6\\
+  \end{tabularx}
+\end{large}
+
+
+\vspace{2ex}
+
+\noindent
+\begin{Large}
+Skład zespołu:\end{Large}
+\begin{large}
+  \newlength{\tblwidth}
+  \setlength{\tblwidth}{\textwidth}
+  \addtolength{\tblwidth}{-3em}
+  \begin{flushright}
+    \begin{tabularx}{\tblwidth}{lXr}
+      Grzegorz Wilaszek &  &  \\
+      Wojciech Krzystek &  &  \\
+    \end{tabularx}\end{flushright}
+  \end{large}
+  \thispagestyle{fancy}
+\end{titlepage}
+
+
+
+\onehalfspacing
+
+\lhead{\footnotesize{Grzegorz Wilaszek, Wojciech Krzystek}}
+\lfoot{\footnotesize{\codename}}
+\cfoot{\normalsize Strona \thepage \ z \pageref{LastPage}}
+\rfoot{\scriptsize{\wersja}}
+
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+
+\vfill
+\begin{center}
+\singlespacing
+\fbox{\begin{minipage}{0.8\textwidth}
+\footnotesize Niniejsze opracowanie powstało w trakcie i jako rezultat zajęć dydaktycznych z przedmiotu 
+wymienionego na stronie tytułowej, prowadzonych w Akademii Górniczo-Hutniczej w Krakowie
+(AGH) przez osobę (osoby) wymienioną (wymienione) po słowach "Prowadzący przedmiot"
+i nie może być wykorzystywane w jakikolwiek sposób i do jakichkolwiek celów, 
+w całości lub części, w szczególności publikowane w jakikolwiek sposób
+i w jakiejkolwiek formie, bez uzyskania uprzedniej, pisemnej zgody tej
+osoby (tych osób) lub odpowiednich władz AGH.
+\vspace{2ex} \\
+\textbf{Copyright \textcopyright \the\year\ Akademia Górniczo-Hutnicza (AGH) w Krakowie}
+      \end{minipage}
+}
+\onehalfspacing
+\end{center}
+
+\tableofcontents
+
+\setcounter{page}{0}
+\chapter{Tematyka projektu}
+\section{Opis zadania}
+
+
+\appendix
+\chapter*{Zawartość płyty CD}
+\begin{description}
+	\item[plik dokuentacja.pdf]	 --- plik z tą dokumentacją (dodatkowo dokumentacja jest oddawana w formie drukowanej)
+	\item[folder knabees]	 --- folder z kompletnym kodem źródłowym aplikacji
+	\item[plik knabees-1.0-jar-with-dependencies.jar]	 --- plik jar zbudowanej aplikacji Javowej
+	\item[pokaz.avi]	 --- krótki filmik demonstrujący działanie aplikacji
+	\item[folder tests]		--- folder z danymi wejściowymi, oraz wykresami dla przeprowadzonych testów
+\end{description}
+
+\addtocounter{page}{-1}
+
+\begin{thebibliography}{9}
+\bibitem{enwiki}
+	\href{http://en.wikipedia.org/wiki/List_of_knapsack_problems}{http://en.wikipedia.org/wiki/List\_of\_knapsack\_problems}
+\bibitem{ba}
+	\href{http://www.iaeng.org/publication/IMECS2008/IMECS2008_pp84-88.pdf}{Bee Colony Algorithm for the Multidimensional Knapsack Problem}
+\bibitem{swing}
+	\href{http://docs.oracle.com/javase/tutorial/uiswing/components/index.html}{Java tutorials, Lesson: Using Swing Components}
+\bibitem{mvnex}
+	\href{http://www.sonatype.com/Support/Books/Maven-By-Example}{Sonatype, Maven By Example}
+\bibitem{mvntcr}
+	\href{http://www.sonatype.com/Support/Books/Maven-The-Complete-Reference}{Sonatype, Maven: The Complete Reference}
+\bibitem{progit}
+	\href{http://git-scm.com/book/}{Scott Chacon, Pro Git}
+\bibitem{java2s}
+	\href{http://www.java2s.com/Code/Java/Chart/CatalogChart.htm}{Java2S - Programming tutorials and source code examples: Charting}
+\end{thebibliography}
+
+
+\label{LastPage}\phantom{\phantomsection{LastPage}}
+\end{document}

@@ -1,0 +1,95 @@
+\ProvidesPackage{mystyle}
+
+%%%%%%%%%%%%%%%%		GENERAL SETTINGS		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[english,polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[MeX]{polski}
+\usepackage[pdftex]{graphicx}
+\usepackage{rotating}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage{amsmath,amsfonts,amsthm}
+\usepackage[retainorgcmds]{IEEEtrantools}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{paralist}			% inparaenum : http://en.wikibooks.org/wiki/LaTeX/List_Structures#Inline_lists
+\usepackage{fancybox}
+\usepackage{array}				% for vertical aligning in tabular envs
+\usepackage{fmtcount}			
+%%\usepackage[a4paper, left=1.5cm, right=1.5cm, top=1.4cm, bottom=1.75cm, headsep=0.5cm]{geometry}
+\usepackage[a4paper, margin=4em, vmargin={4em, 5em}]{geometry}
+\usepackage{ltxtable}
+%%%	%\addtolength{\oddsidemargin}{-.25cm}
+%%%	%\addtolength{\evensidemargin}{-.25cm}
+%%%	%\addtolength{\textwidth}{0.5cm}
+%%%	%\addtolength{\topmargin}{+.25cm}
+%%%	%\addtolength{\textheight}{0.5cm}
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\usepackage{latexsym}
+\usepackage{tabularx}
+\usepackage{setspace}
+\usepackage{lastpage}
+\usepackage[pdftex]{graphicx}
+\usepackage{rotating}
+\usepackage{minibox}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage[table]{xcolor}		% table cells colouring
+
+
+% provides filler text
+\usepackage{lipsum}
+
+% just makes the table prettier (see \toprule, \bottomrule, etc. commands below)
+\usepackage{booktabs}
+
+
+\selectlanguage{polish}
+
+\setlength{\columnsep}{1.5cm}
+\setlength{\columnseprule}{0pt}
+
+%\hyphenpenalty=10000			% blocks splitting words
+
+% sans serif fonts
+%\renewcommand{\familydefault}{\sfdefault}
+
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\diamond$}
+\renewcommand{\labelitemiii}{$\cdot$}
+\renewcommand{\labelitemiv}{$\ast$}
+
+%%%%%%%%%%%%%%%%				CUSTOM COMMANDS		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ud}{\,\mathrm{d}}	% elegant spacing before dx in integral
+\newcommand{\dx}{\ud x}		% same as abowe, but with x
+\newcommand{\je}[0]{\\[1ex]}	% short for \\[1ex] - je: Jeden (one in polish) Ex (oe: One Ex already taken)
+\newcommand{\de}[0]{\\[2ex]}
+\newcommand{\te}[0]{\\[3ex]}
+\newcommand{\kd}[0]{\quad}
+\newcommand{\kkd}[0]{\qquad}
+\newcommand\bigforall{\mbox{\Large $\mathsurround0pt\forall$}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\frenchspacing
+
+
+\title{TMS - System zarządzania zadaniami}
+\author{Grzegorz Wilaszek \and Wojciech Krzystek}
+\date{\today}
+\newcommand{\wersja}{Wersja 1.0 z dnia \today}
+\newcommand{\codename}{<<codename - TODO, coś z TMS ?>>}
+
+\usepackage{color}
+%%%\hypersetup{colorlinks=true}			% te 3 linie nie działają przed dołączeniem hyperref, ale zrobimy to innaczej: \hypersetup{linkcolor=blue}  (patrz: niżej)
+%%%\definecolor{mycol}{rgb}{0,0,0}
+%%%\hypersetup{linkcolor=blue}
+
+\usepackage[pdftitle={TMS-doc},pdfauthor={Grzegorz Wilaszek, Wojciech Krzystek},pdftex]{hyperref}
+
+\definecolor{ourLinksColour}{HTML}{0D0D6D}			% also nice: {1E1E5C}
+\hypersetup{colorlinks=true}
+\hypersetup{linkcolor=ourLinksColour}
+
+\graphicspath{{./images/}}	% entry needed for relative paths when including images
