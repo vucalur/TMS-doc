@@ -497,6 +497,97 @@ złożone byłyby to projekty:
 
 
 
+\chapter{Szczegóły działania (weź może jakąś lepszą nazwę daj na ten rozdział)}
+\section{Przegląd istniejących rozwiązań}
+\subsection{IBM Rational Team Concert}
+\ldots
+
+\subsection{Redmine}
+\uwaga{Poniżej przedstawiono jedynie opis poszczególnej instalacji i konfiguracji systemu Redmine
+wykorzystywanej do prowadzenia wielu projektów w małym (kilka osób) zespole programistów
+--- Redmine udostępnia rozbudowane możliwości a sposób
+w jaki system będzie skonfigurowany jest czynnikiem kształtującym w największej mierze późniejszy
+schemat interakcji użytkowników z systemem (łac. \emph{Modus operandi}).\je
+Z jednej strony mamy możliwość skonfigurowania systemu według własnych potrzeb, z drugiej strony
+jest jest to rozwiązanie w duchu "\emph{out of the box}"}\de
+\begin{description}
+	\item[Role użytkowników]
+		Role w systemie Redmine dzielą się na:
+		\begin{itemize}
+			\item	związaną z zarządzaniem samym Redminem: administrator
+			\item	role pełnione przez użytkownika w danym projekcie, np:  developer, tester, manager
+		\end{itemize}	związaną z zarządzaniem 
+		Użytkownik może w danym projekcie mieć wiele ról. Administrator może dodatkowo pełnić role w projektach.
+	\item[Uprawnienienia użytkowników]
+		Administratorzy mają nieograniczone prawa -- mogą np: zarządzać projektami nieutworzonymi przez siebie,
+		czy też usuwać konta innych użytkowników, w tym administratorów.\je
+		Tworzyć, modyfikować oraz usuwać projekty może tylko administrator.
+		W obrębie jednego projektu wszyscy użytkownicy mogą tworzyć, edytować, zamykać a nawet usuwać
+		dowolne zadania. Wszyscy mogą komentować zadania, zmieniać właściciela, testera, zleceniodawcę
+		tasków w projekcie, do którego jest zapisany (pełni jakąś rolę).\\
+		Każdy ma dostęp odczytu (ale nie zapisu) tasków we wszystkich projektach.\\
+		\uwaga{Redmine zapewnia dużo większe możliwości konfiguracji, drobnoziarnistości
+		uprawnień, itp. Tutaj przybliżono opis działania pojedynczej instalacji Remdine'a z jaką przyszło nam pracować.}
+	\item[Grupowanie tasków]
+		Taski przynależą do jednego konkretnego projektu. Nie da się utworzyć tasków nieposiadających
+		macieżystego projektu, ani takich które należą do wielu projektów
+	\item[Cykl życia tasków]
+		Redmine dostarcza w tym zakresie duże możliwości konfiguracji ---
+		to administrator zakładając dany projekt określa nazwy stanów tasków, oraz możliwych przejść między nimi.
+	\item[Taski]
+		Task może mieć pojedycznego wykonawcę (asignee) lub być przypisany do grupy --- jest to jednak rozwiązanie niewygodne,
+		gdyż trzeba specjalnie tworzyć grupę.
+		Task może na tej samej zasadzie mieć przypisanego testera oraz zleceniodawcę.
+		Dowolny użytkownik mający dostęp do projektu danego taska\footnote{Czyli inaczej: pełniący pewną rolę w danym projekcie}
+		może doliczać do niego godziny pracy.
+	\item[Nawigacja]
+		Po zalogowaniu się użtkownik ma dostępne widoki między innymi:
+		\begin{itemize}
+			\item	Swojej karty czasu pracy
+			\item	Widok projektów, do których jest przypisany\\
+					Po wybrani danego projektu mamy widok użytkowników w projekcie, zadań, itp.
+			\item	Panel użytkownika - edycja danych, preferencji, itp.
+		\end{itemize}
+	\item[Zarządzanie użytkownikami]
+		Tworzyć użytkowników może tylko administrator. Przypisywać role użytkownikom w danym projekcie -- w zależności
+		od konfiguracji -- można zablokować taką możliwość, wtedy przypisywaniem ról w projektach zajmuje się jedynie administrator.
+	\item[Aspekty techniczne]
+		W przypadku usuwania danych jedyny ślad pozostaje po nich w logach aplikacji.
+		Użytkownicy mają jednakże możliwość tworzenia kopii zapasowych całego stanu systemu,
+		oraz eksport danych danego projektu, zadania, itp. do pliku.
+\end{description}
+
+
+
+
+\section{Przyjęte przez nas rozwiązanie}
+Nasz system nie będzie konfigurowalny w sposób w jaki konfigurowalne są dwa systemy przedstawione wyżej,
+tracimy na uniwersalności, za to użytkownik nie zostaje zniechęcony trzystustronową dokumentacją
+samego narzędzia oraz godzinami potrzebnymi na skonfigurowanie systemu do własnych potrzeb.\\
+Zamiast tego chcemy dostarczyć produkt, który z domyślnymi ustawieniami adresuje potrzeby dużej rzeszy małych zespołów.
+\begin{description}
+	\item[Role użytkowników]
+		Analogicznie do opisanej wyżej instalacji Redmine'a:
+		\begin{itemize}
+			\item	związana zarządzaniem systemem: administrator <<<<<< wogóle udostępniać taką rolę ? moim zdaniem nie,
+					tylko admina (adminów) poszczególnego projektu
+			\item	role pełnione przez użytkownika w danym projekcie, np:  developer, tester, manager
+		\end{itemize}	związaną z zarządzaniem 
+		Użytkownik i role są osobnymi bytami - użytkownik może mieć wiele ról, różne w różnych projektach.\\
+		Użytkownik może być zarówno administratorem systemu jak i pełnić inne role w projektach.
+	\item[Uprawnienienia użytkowników]
+		Administratorzy mają nieograniczone prawa -- mogą np:zarządzać projektami nieutworzonymi przez siebie,
+		czy też usuwać konta innych użytkowników, w tym administratorów.\je
+		Każdy użytkownik może tworzyć projekty <<<<<< właśnie: będzie więcej bujania się jak robimy aplikację wieloskalową
+		(każdy się może rejestrowac mailem, robić sobie projekty, itp.) także trzeba tutaj kwestie uprawnień dobrze przemyśleć
+		żebyśmy potem nie klepali czegoś kiepskiego bo się szybko zrobi fuckup.\\
+		Myślę że sensownie będzie zrobić coś jak bitbucket i przełożyć to na język tasków:\\
+		repo = projekt
+		na bb może być kilku adminów 1 repo 
+	\item	\ldots
+\end{description}
+
+
 
 
 
@@ -513,20 +604,8 @@ złożone byłyby to projekty:
 \addtocounter{page}{-1}
 
 \begin{thebibliography}{9}
-\bibitem{enwiki}
-	\href{http://en.wikipedia.org/wiki/List_of_knapsack_problems}{http://en.wikipedia.org/wiki/List\_of\_knapsack\_problems}
-\bibitem{ba}
-	\href{http://www.iaeng.org/publication/IMECS2008/IMECS2008_pp84-88.pdf}{Bee Colony Algorithm for the Multidimensional Knapsack Problem}
-\bibitem{swing}
-	\href{http://docs.oracle.com/javase/tutorial/uiswing/components/index.html}{Java tutorials, Lesson: Using Swing Components}
-\bibitem{mvnex}
-	\href{http://www.sonatype.com/Support/Books/Maven-By-Example}{Sonatype, Maven By Example}
-\bibitem{mvntcr}
-	\href{http://www.sonatype.com/Support/Books/Maven-The-Complete-Reference}{Sonatype, Maven: The Complete Reference}
-\bibitem{progit}
-	\href{http://git-scm.com/book/}{Scott Chacon, Pro Git}
-\bibitem{java2s}
-	\href{http://www.java2s.com/Code/Java/Chart/CatalogChart.htm}{Java2S - Programming tutorials and source code examples: Charting}
+\bibitem{redmine}
+	\href{http://www.redmine.org/projects/redmine/wiki/}{Redmine - Strona Wiki}
 \end{thebibliography}
 
 
