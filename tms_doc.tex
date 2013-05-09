@@ -326,7 +326,7 @@ Niezależnie od wybranej w tej w warstwie technologii, będzie ona bazowała
 (będzie zrealizowana “pod maską”) na technologii JavaScript, dotyczy to również
 technologii opartych na językach innych niż Java.
 
-\subsection{Warstwa prezentacji - ostateczny wybór}
+\subsection{Technologie - ostateczny wybór}
 Po szczegółowej analizie przedstawionych wyżej możliwości, zdecydowaliśmy,
 że zrealizujemy projekty w technologii Play! Powody naszego wyboru są następujące:
 \begin{itemize}
@@ -338,9 +338,18 @@ Po szczegółowej analizie przedstawionych wyżej możliwości, zdecydowaliśmy,
 			z pewnych standardów programowania w Javie.
 	\item	Możliwości uruchomienia serwera aplikacji są bardzo elastyczne i dostosowane
 			do naszych (wyżej opisanych) potrzeb. 
+	\item	Play! Framework do persystencji domyślnie używa biblioteki Avaje Ebean. Jest to framework 
+			bazujący na adnotacjach JPA, dostarczający interfejs znacznie wyższego poziomu niż 
+			implementacje JPA, takie jak Hibernate. Znacznie prostsza jest tranzakcyjność, pisanie 
+			zapytań a także wiele możliwości dostarczają adnotacje dla persystentnych pól, dodając 
+			na przykład kontekst szyfrowania tajnych danych.
+	\item	Framework obsługuje dwa języki programowania: Java i Scala. Można pisać kod w obu językach w ramach 
+			jednego projektu. Daje to bardzo duże możliwości, jako że Java jest językiem niezwykle 
+			popularnym, a Scala nowoczesnym i perspektywicznym. 
+ 
 \end{itemize}
 Framework Play! jest dostępny w dwóch wersjach: dla języka Scala (pracującego na wirtualnej
-maszynie Javy) oraz dla samej Javy. Zdecydowaliśmy się na tę drugą opcję, ponieważ:
+maszynie Javy) oraz dla samej Javy. Zdecydowaliśmy się, póki co, na tę drugą opcję, ponieważ:
 \begin{itemize}
 	\item	Można łatwo wykorzystywać inne bibloioteki i technologi, chociażby takie jak Spring
 	\item	Sami mamy większe doświadczenie w Javie
@@ -349,6 +358,42 @@ maszynie Javy) oraz dla samej Javy. Zdecydowaliśmy się na tę drugą opcję, p
 			jeśli aplikacja będzie napisana w Javie
 \end{itemize}
 
+\subsection{Baza danych}
+Wybraliśmy bazę danych PostgreSQL ze względu na jej bardzo dobre opinie. Jest uważana za najlepszy darmowy system zarządzania 
+bazą danych. Ponadto, w fazie deweloperskiej będziemy korzystać z bazy danych H2, bazy przetrzymującej dane w pamięci. Play! 
+Framework zapewnia bardzo łatwe przełączanie między rzeczywistą bazą danych a atrapą H2. Dodatkowo, bazy danych H2 będziemy 
+używać do testów automatycznych.
+
+\subsection{Dodatkowe biblioteki}
+Kolejnymi, po wyborze głównych technologii, technicznymi wyborami były dodatkowe, wspomagające biblioteki. Na razie 
+będziemy potrzebować głównie komponentów graficznych. I tak zdecydowaliśmy się na następujące:
+\begin{itemize}
+	\item	jTable - biblioteka oparta na jQuery, służąca do prezentacji danych w interaktywnych tabelach. Głównym 
+		zastosowaniem będzie z pewnością tabela z zadaniami, ale także z pracownikami projektu czy kamieniami 
+		milowymi.
+	\item	Highcharts JS - JavaScript'owa biblioteka do prezentacji danych na wykresach. Dostarcza wiele rodzajów 
+		wykresów, także interaktywnych. Przydadzą się nam one do prezentowania analiz pracy w projekcie.
+	\item	Twitter Bootstrap - biblioteka komponentów html, css o JavaScript do szybkiego tworzenia ładnych i nowoczesnych 
+		interfejsów webowych.
+\end{itemize}
+
+\begin{center}	
+\vspace{4ex}	
+	\includegraphics[scale=0.5]{images/jTable.png} \\
+	\includegraphics[scale=0.5]{images/highCharts.png} \\
+\vspace{4ex}
+\end{center}
+
+
+\section{Zarys architektury}
+Przedstawiamy wstępny zarys architekruty systemu. Jest on w dużej mierze podyktowany przez archutekturę technologii Play! Framework. 
+Warto także zwrócić uwagę na sposób zwracania rezultatu do przeglądarki klienta. Będzie się odbywała standardowo - przez generowane 
+widoki, ale także przez pobieranie danych przez web serwisy - np. w formacie JSON.
+\begin{center}	
+\vspace{4ex}	
+	\includegraphics[scale=1.0]{images/tasksArch.jpg} \\
+\vspace{4ex}
+\end{center}
 
 \section{Plan działania}
 Projekt będzie realizowany w metodologii lekkiej - będziemy chcieli początkowo
@@ -356,6 +401,21 @@ zrealizować jedynie podstawowe funkcjonalności takiego systemu, stopniowo dobu
 nowe i zwiększając możliwości starych.\\
 Pozwoli nam to na lepszą estymację czasu potrzebnego na zrealizowanie dalszych funkcjonalności,
 jak i czasu realizacji całego przedsięwzięcia.
+\\
+\\
+Zakładając, że projekt będzie trwał do 15-25 czerwca, przyjęliśmy na początku następujący harmonogra:
+\begin{itemize}
+	\item	29/04/13 - logowanie i rejestracja
+	\item	06/05/13 - panel użytkownika
+	\item	13/05/13 - dodawanie projektu i kamieni milowych
+	\item	20/05/13 - dodawanie zadań
+	\item	27/05/13 - dodawanie współpracowników,
+	\item	przypisywanie roli administratora współpracownikowi
+	\item	10/06/13 - panel zadania: komentarze, zmiana stanu
+		zadania
+	\item	17/06/13 - kilka przykładowych wykresów
+
+\end{itemize}
 
 
 
@@ -576,6 +636,11 @@ tracimy na uniwersalności, za to użytkownik nie zostaje zniechęcony trzystust
 samego narzędzia oraz godzinami potrzebnymi na skonfigurowanie systemu do własnych potrzeb.\\
 Zamiast tego chcemy dostarczyć produkt, który z domyślnymi ustawieniami adresuje potrzeby dużej rzeszy małych zespołów.\te
 Wizja funkcjonalność dla pierwszej iteracji:
+\begin{center}	
+\vspace{4ex}	
+	\includegraphics[scale=0.7]{images/use_case_1.png} \\
+\vspace{4ex}
+\end{center}
 \subsection{Logika aplikacji}
 \subsubsection{Konta użytkowników}
 \begin{itemize}
@@ -640,11 +705,101 @@ Będą dostępne następujące widoki:
 \end{itemize}
 
 
+\chapter{Architektura systemu}
 
+\section{Struktura aplikacji}
+Jak już wcześniej wspomnieliśmy, architektura aplikacji jest podyktowana przez technologię Play! Framework. Jest to 
+typowa technologia webowa oparta o wzorzec Model-View-Controller. Stąd też biorą się podstawowe nazwy pakietów: models, 
+views orac controllers. \\
+\begin{center}	
+\vspace{4ex}	
+	\includegraphics[scale=1.0]{images/tasksArch.jpg} \\
+\vspace{4ex}
+\end{center}
 
+Aplikacja ma następującą strukturę katalogów:
 
+\begin{itemize}
+	\item	app - główny katalog źródłowy	
+		\begin{itemize}
+			\item	models - modele obiektów presystowanych. Są to klasy rozszerzającę klasę Model z framework'a
+				Play! oraz oznaczone adnotacją @Entity. Są tam także Enumy i klasy pomocnicze, które są 
+				persestowane wewnątrz klas @Entity.
+			\item	views - widoki html'owe w plikach *.scala.html. Są to pliki korzystające z PLay'owego mechanizmu 
+				"Template Engine". Silnik szablonów wykorzystuje język Scala (nie ma wersji template'ów dla Javy).
+			\item	controllers - kontrolery rozszerzające play'ową klasę Controller.
+			\item	security - pakiet klas odpowiedzialnych za bezpieczeństwo aplikacji i ochronę przed 
+				nieupoważnionym dostępem. Komponent korzysta z mechanizmów Play! Framework i implementuje interferjsy, 
+				dzięki którym można chronić dostęp do kontrolera przez dodanie adnotacji.
+			\item	Global.java - klasa z ustawieniami globalnymi aplikacji.	
+		\end{itemize}
+	\item	conf - konfiguracja aplikacji webowej
+		\begin{itemize}
+			\item	application.conf - ustawienia aplikacji, takie jak konfiguracja połączenia z bazą danych, 
+				czy też klucz AES do szyfrowania (np. haseł użytkowników w bazie danych)
+			\item	routes - tak zwany router aplikacj Play. Jest to odwzorowanie zapytań HTML (GET, POST...) 
+				na metody kontrolerów.		
+		\end{itemize}
+	\item	project - ustawienia projektu, głównie zależności biblioteczne
+		\begin{itemize}
+			\item	Build.scala - dependencje dla technologii sbt, opartej na Ivy (Apache), domyślnie wykorzystywanej 
+				przez Play! Framework
+			\item	plugins.sbt - wtyczki sbt
+		\end{itemize}
+	\item	puplic - publiczne statyczne pliki:
+		\begin{itemize}
+			\item	images - obrazy
+			\item	botstrap - biblioteki Twitter Bootstrap
+			\item	javascripts - między innymi jTable i HighCharts
+			\item	stylesheets - css
+		\end{itemize}
+	\item	test - testy jednostkowe i integracyjne
+\end{itemize}
 
+\section{Modele}
 
+\section{Interfejs graficzny}
+
+\subsection{Projekt interfejsu graficznego}
+Staraliśmy się zaprojektować wygodny i intuicyjny interfejs graficzny. Użytkownik powinien od początku widzieć jak 
+najbardziej ogólne rzeczy i szybko przechodzić do szczegółów swojego projektu, mając jednoczesny pogląd na jak 
+największą ilość elementów. Zaplanowaliśmy następującą grupę widoków:
+\begin{itemize}
+	\item	Widok początkowy - logowanie, rejestracja i dodatkowa zakładka z informacjami o produkcie. Wchodząc na stronę, 
+		użytkownik domyślnie zobaczy zakładkę z logowaniem, ponieważ najprawdopodobniej to będzie go interesowało.
+	\item	Strona główna użytkownika - jest to strona najogólniejsza. Użytkownik zobaczy tu wszystko swoje projekty. Będzie miał 
+		także linka do edycji swojego profilu i wylogowywanie. Także tutaj znajdzie formularz zakładanie nowego projektu.
+	\item	Strona projektu - Tutaj użytkownik przejdzie po kliknięci w link z tabelki ze swoimi projektami. Na górze będzie miał 
+		zakładki z :
+	\begin{itemize}
+		\item	Zadaniami
+		\item	Kamieniami milowymi
+		\item	Współpracownikami
+		\item	Wykresami pracy
+	\end{itemize}
+		Domyślnie załaduje się strona z zadaniami, ponieważ to ona jest najważniejsza. Zadanie, kamienie milowe i współpracownicy 
+		będą prezentowane w interaktywnych tabelkach. W tabelach będą linki do stron szczegółowych odpowiednio: zadań, 
+		kamieni milowych czy też współpracowników.
+	\item	Strony szczegółow dla pojedynczych bytów:
+	\begin{itemize}
+		\item	Zadanie - Będą tu dostępne wszystkie atrybuty zadanie, wszystko w przejrzystej formie. W tabelce z zadaniami te
+			dane będą mogły być prezentowane tylko skrótowo i pobieżnie. Tu natomiast będzie ładniej, dokładniej i bardziej 
+			przejrzyście. Będzie także formularz dodawania komentarza. Pojawi się również historia: doytychczasowe zmiany 
+			(otwieranie i zamykanie tego zadania) oraz komentarze.
+		\item	Kamienień milowy - tutaj sytuacja jest bardzo podobna. Również będą zaprezentowane różne dane oraz (być może) 
+			dodawanie komentarzy.
+		\item	Współpracownik - Będą tu informacje o pracowniku projektu a także dane o jego pracy - liczy i wykresy.
+	\end{itemize}
+\end{itemize}
+
+Prezentujemy wykres opisanego interfejsu graficznego. Uwzględniliśmy w nim generyczne widoki, przejścia między widokami oraz różne typy 
+komponentów na stronie html (opisane w legendzie po lewej stronie). \\
+
+\begin{center}	
+\vspace{4ex}	
+	\includegraphics[scale=0.6]{images/ui_chart.png} \\
+\vspace{4ex}
+\end{center}
 
 
 %\appendix
@@ -666,6 +821,17 @@ Będą dostępne następujące widoki:
 	\href{https://developers.google.com/web-toolkit/}{Google Web Toolkit}
 \bibitem{vaadin}
 	\href{https://vaadin.com/book/vaadin7/-/page/architecture.html}{Vaadin Architecture}
+\bibitem{play}
+	\href{http://www.playframework.com/}{Play! Framework}
+\bibitem{jTable}
+	\href{http://jtable.org/}{jTable Plugin}
+\bibitem{highcharts}
+	\href{http://www.highcharts.com/}{High Charts JS}
+\bibitem{bootstrap}
+	\href{http://twitter.github.io/bootstrap/}{Twitter Bootstrap}
+\bibitem{ebean}
+	\href{http://www.avaje.org/}{Avaje Ebean}
+
 \end{thebibliography}
 
 

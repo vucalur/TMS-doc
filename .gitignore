@@ -1,7 +1,11 @@
 *
 *~
-!images/
 !images/agh_crop.pdf
+!images/highCharts.png
+!images/jTable.png
+!images/tasksArch.jpg
+!images/ui_chart.png
+!images/use_case_1.png
 !Makefile
 !README.txt
 !*.tex
