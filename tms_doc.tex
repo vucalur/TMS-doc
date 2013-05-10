@@ -801,6 +801,153 @@ komponentów na stronie html (opisane w legendzie po lewej stronie). \\
 \vspace{4ex}
 \end{center}
 
+\subsection{Technologie i biblioteki}
+Implementacja webowego interfejsu graficznego wykorzystuje kilka technologii i bibliotek. Technologie są związane z 
+wykorzystaną technologią webową, biblioteki natomiast są bibliotekami opartymi na JavaScript i jQuery. Technologia 
+powiązana z budowaniem widoków to:
+\begin{itemize}
+	\item	Play! Framework Template Engine - jest to typowy mechanizm widoków w technologiach webowych MVC. 
+		Widok (plik .scala.html) jest kompilowany do klasy w języku Scala. Okeśla się, jakie argumenty potrzebuje 
+		dany widok do stworzenia treści strony i takie argumenty trzeba mu przekazać w statyczne metodzie render(), 
+		którą wywołujemy w kontrolerach aplikacji webowej. Możliwe jest ponadto konstruowania widoku wewnątrz innego 
+		widoku, dzięki czemu można stworzyć drzewkową strukturę generycznych widoków. Dalej opiszemy strukturę zależności 
+		widoków w naszej aplikacji. \\
+		Play! Framework Template Engine daje udostępnia zastaw tagów w języku Scala: instrukcja warunkowe, pętle itd. Mamy 
+		także w zasadzie dostęp do wszystkich źródeł aplikacji a taże załączonych bibliotek, ale nie należy tego nadużywać 
+		i przenosić logiki biznesowej do widoków.
+\end{itemize}
+
+Wykorzystamy również szereg bibliotek pomocniczych
+\begin{itemize}
+	\item	Twitter Bootstrap - bardzo popularny zestaw komponentów CSS i JavaScript. Przy minimum konfiguracji i pisania własnych 
+		klas i stylów osiągnęliśmy szybko nowoczesny wygląd. W tej fazie projektu nie zamierzamy poświęcać zbyt dużo czasu 
+		na wygląd aplikacji, jednak chcemy, aby strony naszego serwisu od razu przyzwoicie się prezentowały. Dodatkowo, wykorzystanie 
+		Bootstrap'a da bardzo dużo możliwości w przyszłości, aby dostosować wygląd strony i rozbudować szatę graficznę. Być może, kiedyś 
+		uda nam się znaleźć osobę, która poświęci więcej czasu na dopracowanie stylów CSS i zaprojektuje bardzo efektowny interfejs.
+	\item	jTable - opisywaliśmy już wcześniej ten komponent. Biblioteka jest oparta na jQuery. W ramach naszych widoków musimy tylko 
+		wstawić element <div>, a następnie umieścić w nim zainicjalizowanę tabelę. Tabelka wymaga podania pewnych atrybutów:
+		\begin{itemize}
+			\item	Linki, do któych będą przesyłane akcje: list, create, updated, delete. Będą to linki powiązane z konkretnymi 
+				metodami naszych kontrolerów. Widzimy przy okazji, że tabele jTable obsługują pełny zestaw operacji CRUD 
+				na przechowywanych elementach.
+			\item	Kolumny tabeli: najlepiej nazwać je identycznie z nazwami pól odpowiadające klasy w modelu danych w aplikacji 
+				webowej. Dzięki temu, przy akcjach tworzenia, edycji oraz usuwania Play! automatyczni powiąże dane z formularza 
+				przesłanego przez jTable i stowrzy obiekt klasy z modelu danych. Dla kolumny tabeli możemy dodatkowo ustawić 
+				pewne atrybuty, takie jak
+				\begin{itemize}
+					\item	displayValue - możemy tu manipulować wartością wyświetlaną w tabeli. Opcja jest bardzo przedatna 
+						w tabeli z zadaniami, gdzie chcemy prezentować nie tylko czysty tekst, ale także różne 
+						elementy graficzne, np. ikonki dla różnych rodzajów zadań czy różne kolory dla różnych priorytetów 
+						zadań.
+					\item	create, update - domyślnie te wartości są ustawione na true, ale zmianiając te pola na false, 
+						sprawimy, że nie będzie można ich ustawić w formularzu - odpowiednio dodawania lub edcji.
+					\item	list - także domyślnie true. Czasem jednak nie chcemy, aby wartość była wyświetlana w tabeli.
+					\item	options - podajemy tu listę, słownik lub link, z którego w formacie JSON pobierzemy opcje w podobnym 
+						formacie. Spośród tych opcji będziemy wybierać wartość pola i nie będziemy musieli wpisywać go ręcznie.
+					\item	type - może być to na przykład 'date'. Dzięki temu datę w formularzu będziemy wybierać z kalendarzyka.
+				\end{itemize}
+			\item	Dodatkowo możemy ustawić pewne atrybuty całej tabeli, takie jak: możliwość sortowanie, domyślne sortowanie itp.
+		\end{itemize}
+		Wymiana danych z serwerem odbywa się za pośrednictwem formularzy i metody POST html a także za pośrednictwem JSON'a. W formacie JSON 
+		przede wszystkim zwracamy dane z serwera do AJAX'owych zapytań tabeli jTable. Dla dokładniejszego poglądu przedstawiamy przykładową
+		tabelę z naszego projektu, tabelę z kamieniami milowymi. Zawiera ona większość wymienionych weżej elementów. Wysztstko jest 
+		wkomponowane w widok Play! Framework Template Engine: \\
+		\begin{verbatim}
+@projectMain("mileStones", project, scripts = jtableScript) {
+<div id="MilestonesTableContainer"></div>
+}
+
+@jtableScript = {
+<script type="text/javascript">
+        $(document).ready(function () {
+            $('#MilestonesTableContainer').jtable({
+                title: 'Mile Stones',
+                actions: {
+                    listAction: '@routes.MileStones.list(project.id)',
+                    createAction: '@routes.MileStones.create(project.id)',
+                    updateAction: '@routes.MileStones.update(project.id)',
+                    deleteAction: '@routes.MileStones.delete(project.id)'
+                },
+                fields: {
+                    id: {
+                        title: 'Id',
+                        list: false,
+                        key: true
+                    },
+                    name: {
+                        title: 'Mile Stone',
+                        display: function (data) {
+                         return '<a href="' + '@routes.Projects.mileStones(project.id)' + '/' + data.record.id + '">' + data.record.name + '</a>';
+                        
+                        }
+                    },
+                    description: {
+                     title: 'Description',
+                     list: false,
+                     type: 'textarea'
+                    },
+                    creationDate: {
+                        title: 'Created',
+                        type: 'date',
+                        create: false,
+                        edit: false
+                    },
+                    dueDate: {
+                        title: 'Due Date',
+                            type: 'date'
+                    },
+                    tasksOpened: {
+                        title: 'Opened',
+                        edit: false,
+                        create: false
+                    },
+                    tasksClosed: {
+                        title: 'Closed',
+                        edit: false,
+                        create: false
+                    },
+                    project: {
+                        title: 'Project',
+                        list: false,
+                        create: false,
+                        edit: false
+                    },
+                    progress: {
+                     display: function (data) {
+                     var opened = data.record.tasksOpened;
+                     var closed = data.record.tasksClosed;
+                     var today = new Date();
+                     var due = new Date(data.record.dueDate);
+                     if(opened != 0 || closed != 0) {
+                         var percentage = Math.round ( (closed * 100) / (opened + closed) );
+                     }
+                         if(closed == 0) {
+                         var percentage = 0;
+                         }
+                         var progrClass = "progress progress-info";
+                         if(due < today) {
+                         if(opened > 0)
+                         var progrClass = "progress progress-danger";
+                         else
+                         var progrClass = "progress progress-success";
+                         }
+                         return '<div class="' + progrClass + '"><div class="bar" style="width: ' + percentage +'%"></div></div>'
+                        },
+                     create: false,
+                     edit: false
+                    }
+                }
+            });
+            $('#MilestonesTableContainer').jtable('load');
+        });
+</script>
+}
+\end{verbatim}
+	\item	High Charts JS - kolejna biblioteka oparta na JavaScript. Także posiada możliwość interaktywnego ładowania danych technologią AJAX.
+\end{itemize}
+
+\subsection{Struktura widoków}
+
 
 %\appendix
 %\chapter*{Zawartość płyty CD}
