@@ -377,23 +377,34 @@ będziemy potrzebować głównie komponentów graficznych. I tak zdecydowaliśmy
 		interfejsów webowych.
 \end{itemize}
 
-\begin{center}	
-\vspace{4ex}	
-	\includegraphics[scale=0.5]{images/jTable.png} \\
-	\includegraphics[scale=0.5]{images/highCharts.png} \\
-\vspace{4ex}
-\end{center}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/jTable.png}
+\caption{Przykładowa tabela CRUD generowana przez jTable}
+\label{fig:jTable}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/highCharts.png}
+\caption{Przykładowy wykres wykonany przy użyciu biblioteki Highcharts JS}
+\label{fig:highCharts}
+\end{figure}
+
 
 
 \section{Zarys architektury}
 Przedstawiamy wstępny zarys architekruty systemu. Jest on w dużej mierze podyktowany przez archutekturę technologii Play! Framework. 
 Warto także zwrócić uwagę na sposób zwracania rezultatu do przeglądarki klienta. Będzie się odbywała standardowo - przez generowane 
 widoki, ale także przez pobieranie danych przez web serwisy - np. w formacie JSON.
-\begin{center}	
-\vspace{4ex}	
-	\includegraphics[scale=1.0]{images/tasksArch.jpg} \\
-\vspace{4ex}
-\end{center}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/tasksArch.jpg}
+\caption{Architektura systemu}
+\label{fig:tasksArch}
+\end{figure}
+
 
 \section{Plan działania}
 Projekt będzie realizowany w metodologii lekkiej - będziemy chcieli początkowo
@@ -636,11 +647,13 @@ tracimy na uniwersalności, za to użytkownik nie zostaje zniechęcony trzystust
 samego narzędzia oraz godzinami potrzebnymi na skonfigurowanie systemu do własnych potrzeb.\\
 Zamiast tego chcemy dostarczyć produkt, który z domyślnymi ustawieniami adresuje potrzeby dużej rzeszy małych zespołów.\te
 Wizja funkcjonalność dla pierwszej iteracji:
-\begin{center}	
-\vspace{4ex}	
-	\includegraphics[scale=0.7]{images/use_case_1.png} \\
-\vspace{4ex}
-\end{center}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/use_case_1.png}
+\caption{Przykładowy wykres wykonany przy użyciu biblioteki Highcharts JS}
+\label{fig:use_case_1}
+\end{figure}
+
 \subsection{Logika aplikacji}
 \subsubsection{Konta użytkowników}
 \begin{itemize}
@@ -711,11 +724,12 @@ Będą dostępne następujące widoki:
 Jak już wcześniej wspomnieliśmy, architektura aplikacji jest podyktowana przez technologię Play! Framework. Jest to 
 typowa technologia webowa oparta o wzorzec Model-View-Controller. Stąd też biorą się podstawowe nazwy pakietów: models, 
 views orac controllers. \\
-\begin{center}	
-\vspace{4ex}	
-	\includegraphics[scale=1.0]{images/tasksArch.jpg} \\
-\vspace{4ex}
-\end{center}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/tasksArch.jpg}
+\caption{Architektura systemu}
+\label{fig:tasksArch}
+\end{figure}
 
 Aplikacja ma następującą strukturę katalogów:
 
@@ -795,11 +809,13 @@ największą ilość elementów. Zaplanowaliśmy następującą grupę widoków:
 Prezentujemy wykres opisanego interfejsu graficznego. Uwzględniliśmy w nim generyczne widoki, przejścia między widokami oraz różne typy 
 komponentów na stronie html (opisane w legendzie po lewej stronie). \\
 
-\begin{center}	
-\vspace{4ex}	
-	\includegraphics[scale=0.6]{images/ui_chart.png} \\
-\vspace{4ex}
-\end{center}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/ui_chart.png}
+\caption{Struktura interfejsu graficznego}
+\label{fig:ui_chart}
+\end{figure}
+
 
 \subsection{Technologie i biblioteki}
 Implementacja webowego interfejsu graficznego wykorzystuje kilka technologii i bibliotek. Technologie są związane z 
@@ -852,6 +868,9 @@ Wykorzystamy również szereg bibliotek pomocniczych
 		przede wszystkim zwracamy dane z serwera do AJAX'owych zapytań tabeli jTable. Dla dokładniejszego poglądu przedstawiamy przykładową
 		tabelę z naszego projektu, tabelę z kamieniami milowymi. Zawiera ona większość wymienionych weżej elementów. Wysztstko jest 
 		wkomponowane w widok Play! Framework Template Engine: \\
+		% TODO: lstlistings instead of verbatim - I'll do it
+		
+		
 		\begin{verbatim}
 @projectMain("mileStones", project, scripts = jtableScript) {
 <div id="MilestonesTableContainer"></div>
