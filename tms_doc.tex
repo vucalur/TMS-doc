@@ -740,7 +740,7 @@ Aplikacja ma następującą strukturę katalogów:
 				Play! oraz oznaczone adnotacją @Entity. Są tam także Enumy i klasy pomocnicze, które są 
 				persestowane wewnątrz klas @Entity.
 			\item	views - widoki html'owe w plikach *.scala.html. Są to pliki korzystające z PLay'owego mechanizmu 
-				"Template Engine". Silnik szablonów wykorzystuje język Scala (nie ma wersji template'ów dla Javy).
+				,,Template Engine''. Silnik szablonów wykorzystuje język Scala (nie ma wersji template'ów dla Javy).
 			\item	controllers - kontrolery rozszerzające play'ową klasę Controller.
 			\item	security - pakiet klas odpowiedzialnych za bezpieczeństwo aplikacji i ochronę przed 
 				nieupoważnionym dostępem. Komponent korzysta z mechanizmów Play! Framework i implementuje interferjsy, 
@@ -772,6 +772,42 @@ Aplikacja ma następującą strukturę katalogów:
 
 \section{Modele}
 
+\section{Bezpieczeństwo aplikacji - pakiet security}
+
+Pakiet ,,security'' jest modułem aplikacji odpowiedzialnym za ochronę przed nieupoważnionym dostępem. Klasy tego modułu są implementacjami interfejsów dwóch mechanizmów ułatwiających automatyczne chronienie akcji kontrolerów w wypadku, gdy użytkownik nie ma do nich praw. Te dwa mechanizmy to:
+\begin{itemize}
+	\item	Play Security - wbudowany mechanizm bezpieczeństwa framework'a Play! Zawiera bardzo przyjazny mechanizm autentykacji. Wymaga zaimplementowania klasy Security.Authenticator i jej dwóch metod:
+	\begin{itemize}
+		\item	getUsername - zwraca nazwę zalogowanego użytkownik. Jeśli zwróci null, to użytkownik nie jest zalogowany, co z kolei spowoduje przekierowanie do kolejnej metody: 
+		\item	onUnauthorized - tutaj możemy zdefiniować akcję do wykonania w razie niepowodzenia autentykacji. Zwykle podaje się tu stronę z logowaniem. W efekcie, mechanizm zadziała po dodaniu adnotacji ,,@Security.Authenticated(MySecured.class)'' na klasie kontrolera bądź na dowolnej jego metodzie.
+	\end{itemize}	
+	\item	Play Deadbolt (be.objectify.deadbolt) - zewnętrzny moduł napisany na potrzeby Play! framework. Zawiera poniekąd funkcjonalności modułu Play Security, ale jest wolniejszy, ponieważ sprawdza więcej warunków i często musi się odwoływać do bazy danych. Poza tym, w naszym przypadku Play Security i Deadbolt wykorzystują inne podmioty uwierzytelniania. Dlatego Deadbolt jest przez nas używany w sytuacjach, które tego wymagają i w których Play Security już nie wystarcza. Deadbolt dostarcza podobną możliwość filtracji uprawnień ale już na podstawie ról użytkownika. Może to na przykład być administrator lub zwykły użytkownik aplikacji. Rola musi być konkretną klasą - enumem implementującym be.objectify.deadbolt.core.models.Role. Natomiast encja, do której przynależy rola implementuje interfejs Subject. Podobnie jak w module Play Security, wystarczy następnie tylko dodać adnotacje do kontrolerów lub ich metod: \begin{verbatim}@Restrict(@Group("ADMIN"))\end{verbatim}
+\end{itemize}
+
+\subsection{Mechanizm uwierzytelniania - Secured}
+
+Nasz mechanizm uwierzytelniania korzysta z modułu Play Security. Jest to klasa security.Secured, implementująca wspomniany wyżej interfejs Security.Authenticator. Nasza metoda \begin{verbatim}getUsername(Context ctx)\end{verbatim} pobiera nazwę użytkownika z sesji - z plików cookies. Jeśli nazwa użytkownika nie została tam zapisana, to metoda zwróci null - uwierzytelnianie się nie powiedzie. Nazwa użytkownika jest zapisywana w sesji użytkownika w metodzie authenticate() kontrolera cotrollers.Application. Przetrzymywanie nazwy użytkownika w sesji jest bezpieczne - pliki cookies są szyfrowane i podpisywane, więc złośliwy użytkownik nie będzie mógł podmienić ich treści. W razie niepowodzenia autentykacji (zwrócenie null), nasza metoda onUnauthorized(Context ctx) przekieruje użytkownika do strony startowej - strony logowania.
+
+\subsection{Mechanizm chronienia zasobów przed nieupoważnionymi użytkownikami - MainDeadboltHandler}
+
+Jest to mechanizm wykorzystujący modułDeadbolt. Nie wystarcza nam jedynie sprawdzanie, czy użytkownik się zalogował w naszej aplikacji. Chcemy też, aby:
+\begin{itemize}
+	\item	Użytkownik nie miał dostępu do zasobów projektu, do którego nie został zaproszony - musi mieć uprawnienie pracownika projektu, aby cokolwiek zrobić
+	\item	W projekcie był podział na role: administratorzy i pracownicy. Niektóre akcje wymagają uprawnień administratora - a inne tylko pracownika. Dodatkowo, w przyjętej przez nas logice rola administratora rozszerza rolę pracownika - tak więc administrator jest także pracownikiem.
+\end{itemize}
+Do poprawnego skonfigurowania mechanizmu konieczne było napisanie kilku klas i implementacja pewnych interfejsów przez kilka innych klas:
+
+\begin{itemize}
+	\item	security.MainDeadboltHandler - implementacja interfejsu DeadboltHandler. Jest to rdzeń całego mechanizmu. Zawiera on akcję onAuthFailure: podobną jak w mechanizmie Play Security. Jest to akcja, którą wykonamy, jeśli użytkownik nie ma praw do akcji, której rząda. Metoda zwróci informację błędu w formacie json. Format taki jest wymagany przez nasz webowy interfejs graficzny - tabelka oparta na jQuery wymaga takiego formatu komunikatu. Przyda się to na przykład wtedy, gdy zwykły użytkownik spróbuje zrobić coś, co może robić tylko administrator. Ten sam json'owy format wiadomości zobaczy użytkownik w przeglądarce, jeśli nie miał określonych praw w projekcie. Uznaliśmy, że na razie nie musimy wyświetlać takiemu użytkownikowi strony w ładniejszym formacie. Kolejno, MainDeadboltHandler zawiera metodę getSubject, która (na podstawie ścieżki http request) i zawartości plików cookies użytkownika, określa jaki użytkownik i do jakiego projektu próbuje się dostać. Zwróci następnie ,,Subject'', czyli pobierze z bazy danych encję opisującą udział danego użytkownika w danym projekcie - czyli obiekt klasy Contributor. Jeśli użytkownik w tym projekcie nie uczestniczy, wówczas metoda zwróci null
+	\item	models.Contributor - encja naszego modelu danych. Jest tabelą łącznikową użytkownika i projektu - opisuje przynależność jakiegoś użytkownika do jakiegoś projektu. Implementuje interfejs Subject. Oznacza to, że jest podmiotem dla akcji wykonywanych przez mechanizm Deadbolt. Obiekt tej klasy jest zwracany przez metodę jetSubject klasy MainDeadboltHandle. Posiada metodę getRoles(), które zwraca listę ról w projekcie. Jeśli rolą użytkownika jest CONTRIBUTOR - zwróci taką wartość w jednoelementowej liście. Jeśli ADMIN - zwróci listę złożoną z obu tych ról. Tak jak wspomnieliśmy wcześniej - ADMIN rozszerza CONTRIBUTOR.
+	\item	models.Role - enum o dwóch wartościach: 
+	\begin{itemize}
+		\item	ADMIN
+		\item	CONTRIBUTOR
+	\end{itemize}
+	Implementuje interfejs be.objectify.deadbolt.core.models.Role i jego metodę \begin{verbatim}getName()\end{verbatim} Wartość zwracana przez tą metodę jest podstawą dla filtrów \begin{verbatim}@Restrict\end{verbatim}, których możemy używać w kontrolerach:
+	\item	controllers.*  - w tym pakiecie wykorzystujemy już to wszystko, co poprzednio zaimplementowaliśmy. Możemy dodawać na przykład adnotacje \begin{verbatim}@Restrict\end{verbatim} dla klasy kontrolera bądź dla jego metod. Przykład wykorzystania: \begin{verbatim}@Restrict(@Group("CONTRIBUTOR")) \end{verbatim}
+\end{itemize}
 \section{Interfejs graficzny}
 
 \subsection{Projekt interfejsu graficznego}
