@@ -726,7 +726,7 @@ typowa technologia webowa oparta o wzorzec Model-View-Controller. Stąd też bio
 views orac controllers. \\
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{images/tasksArch.jpg}
+\includegraphics[scale=1.0]{images/tasksArch.jpg}
 \caption{Architektura systemu}
 \label{fig:tasksArch}
 \end{figure}
@@ -771,6 +771,193 @@ Aplikacja ma następującą strukturę katalogów:
 \end{itemize}
 
 \section{Modele}
+
+Pakiet ,,models'' jest pakietem, w który znajdują się modele danych, czyli encje w postaci klas Javy. Twórcy Play'a proponują skorzystanie z 
+frameworka persystencji dołączonego do bibliotek Play'a - Ebean. Technologia relizuje połączenie z bazą danych i persystencję klas Javowych. 
+Wykorzystuje sterowniki JDBC i realizuje mapowanie relacji encji na podstawie adnotacji JPA. Ponadto, encje modelu danych rozszerzają klasę 
+\begin{verbatim}play.db.Model\end{verbatim}, która dostarcza sporo wygodnych funkcji na wyższym poziomie abstrakcji. Skorzystaliśmy z oferowanej 
+pezez Play! Framework funkcjonalności możliwości definiowania publicznych pól klasy modelu. Play! symuluje na takich polach mechanizm ,,Properties'', 
+co daje pewną wygodę, jednak nie każdemu musi pasować taka opcja. Można zwyczajnie uczynić te pola prywatymi i wygenerować dla nich gettery i settery. 
+Przejście na taką konwencję jest szybkie i proste przy użyciu mechanizmu refaktoryzacji dowolnego IDE. Można to zrobić w każdym momencie, jednak 
+należy się nad tym moważnie zastanowić. Przy takiej zmianie bowiem serwer Ebean będzie dokonywał automatycznego dociągania danych do klasy według 
+napisanych przez nas getterów (a nie, tak jak wcześniej, poprzez użycie publicznego ,,property''). Z tego powodu może istnieć potrzeba odwoływania się 
+do prywatnych atrybutów wewnątrz klasy poprzez gettery, a nie przez bezpośredni dostęp.
+
+\subsection{Model danych}
+
+Przedstawiamy wykres relacji encji naszego systemu. \\
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{images/erd.jpg}
+\caption{Diagram Relacji Encji}
+\label{fig:erd}
+\end{figure}
+
+System zawiera następujące modele (widoczne na diagramie ER):
+\begin{itemize}
+	\item	\begin{verbatim}User\end{verbatim} Użytkownik naszej aplikacji. Encja zawiera na razie tylko login i hasło. Hasło jest szyfrowane 
+		za pomocą automatycznego mechanizmu szyfrującego techonogii Ebean. Pogega ta na dodaniu adnotacji 
+		\begin{verbatim}@Encrypted(dbEncryption=false)\end{verbatim} do pola, które ma być przechowywane w bazie danych w postaci 
+		zaszyfrowanej. Atrybut dbEncryption wskazuje, czy szyfrowanie ma się odbywać po stronie systemu zarządzania bazą danych, czy po 
+		stronie naszej aplikacji. Wybraliśmy szyfrowanie po stronie aplikacje z dwóch względów:
+		\begin{itemize}
+			\item	Szyfrowanie po stronie systemu zarządzania bazą danych wymaga zainstalowania tam specjalnych funkcji i modułów
+			\item	Wolimy, aby odbywało się to po stronie aplikacji. Dane będą od razu wędrowały przez sieć w postaci zaszyfrowanej 
+				a my skorzystamy z klucza naszej aplikacji
+		\end{itemize}
+		Kluczem głównym jest login użytkownika.\\
+		Encja użytkownika jest połączona z następującymi encjami:
+		\begin{itemize}
+			\item	Project - lista projektów stworzonych przez użytkownika
+			\item	Contributor - listę encji reprezentujących uczestnictwa tego użytkownika w projektach.
+		\end{itemize}
+
+	\item	\begin{verbatim}Project\end{verbatim} Projekt informatyczny. Zawiera nazwę i opis oraz liczbowy identyfikator - klucz główny. 
+		Nazwa projektu musi być unikalna dla danego użytkownika (właściciela). Projekt posiada następujące połączenia z innymi encjami:
+		\begin{itemize}
+			\item	User - jednego właściciela
+			\item	Contributor - listę pracowników
+			\item	MileStone - listę kamieni milowych
+			\item	Task - listę zadań
+		\end{itemize}
+
+	\item	\begin{verbatim}MileStone\end{verbatim} Kamień milowy, jednostka organizacyjna projektu informatycznego. Encja przechowuje datę stworzenia, 
+		termin realizacji, nazwę i opis. Kamień milowy posiada następujące połączenia z innymi encjami:
+		\begin{itemize}
+			\item	Project - projekt, którego jest częścią
+			\item	Task - listę zadań przypisanych do tego kamienia milowego
+		\end{itemize}
+
+	\item	\begin{verbatim}Task\end{verbatim} Zadanie. Posiada długą listę atrybutów:
+		\begin{itemize}
+			\item	id - liczbowy klucz główny
+			\item	taskNumber - numer porządkowy zadania w obrębie projektu
+			\item	name - skrótowy opis, tytuł
+			\item	description - dokładny opis
+			\item	priority - priorytet zadania. Wartością jest enum (models.Priority) o następujących wartościach:
+			\begin{itemize}
+				\item	HIGHEST
+				\item	HIGH
+				\item	MEDIUM
+				\item	LOW
+				\item	LOWEST
+			\end{itemize}
+			\item	taskKind - rodzaj zadania. Wartością jest enum (models.TaskKind) o następujących wartościach:
+			\begin{itemize}
+				\item	TASK
+				\item	DEFECT
+				\item	ENHENCEMENT
+				\item	DOCUMENTATION
+				\item	CONFIGURATION
+				\item	QUESTION
+			\end{itemize}
+			\item	creationDate - data stworzenia zadania
+			\item	dueDate - termin realizacji. Jeśli nie zostanie wprost podany, to jest dziedziczony po terminie realizacji 
+				kamienia milowego, do którego należy zadanie (o ile do jakiegoś należy).
+			\item	taskStatus - status zadanie. Wartością jest enum (models.TaskStatus), który na razie przewiduje takie wartości:
+			\begin{itemize}
+				\item	OPENED
+				\item	CLOSED
+			\end{itemize}
+		\end{itemize}	
+ 		Zadanie posiada także następujące połączenia z innymi encjami:
+		\begin{itemize}
+			\item	User - dwa pola odnoszą się do encji User: assignee oraz creator. Czyli odpowiednie: osoba zajmująca się aktualnie 
+				tym zadaniem oraz osoba, ktora je stworzyła.
+			\item	MileStone - kamień milowy, do którego zadanie jest przypisane. To pole dopuszcza wartość null.
+			\item	Project - projekt, którego częścią jest zadania. To pole nie może być nullem.
+			\item	HistoryEvent - lista zdarzeń związanych z zadaniem (komentarze, zmiany statusu itp.)
+			\item	WorkReport - raporty z pracy nad zadaniem (głównie raportowanie godizn pracy)
+		\end{itemize}
+	\item	\begin{verbatim}Contributor\end{verbatim} Pracownik projektu. W języku bazodanowym jest to tabela łącznikowa, łączące encje użytkowników 
+		z necjami projektu. Ma zatem znaczenie "Użytkownik user jest pracownikiem projektu project". Encja posiada liczbowy klucz główny oraz 
+		dodatkowy atrybut: \begin{verbatim}role\end{verbatim} o wartości enum'a Role (models.Role), który dopuszcza następujące wartości:
+		\begin{itemize}
+			\item	ADMIN - uprawnienia administratora projektu. Opisaliśmy je szczegółowo w wymaganiach oraz w dokumentacji modułu 
+				bezpieczeństwa aplikacji.
+			\item	CONTRIBUTOR - jest to zwykły pracownik projektu.
+			\item	DELTED - oznacza, że użytkownik był kiedyś współpracownikiem w projekcie, ale już nim nie jest. Wolimy przechowywać 
+				to w tej postaci, niż usuwać wpis z bazy danych, poniważ informacje z nim związane mogą być potrzebne do 
+				analiz i statystyk Poza tym, można w ten sposób odebrać komuś czasowo uczestnictwo w projekcie i potem łatwo 
+				przywrócić tą osobę do udziału w projekcie.
+		\end{itemize}
+		Encja posiada także powiązania z innym encjami:
+		\begin{itemize}
+			\item	User - użytkownik, który jest współpracownikiem opisywanym przez encję
+			\item	Project - projekt, którego dotyczy współpraca
+		\end{itemize}
+	\item	\begin{verbatim}HistoryEvent\end{verbatim} Encja przedstawiająca jakieś zdarzenie związane z zadaniem. Może to być komentarz do zadania 
+		albo zmiana statusu na otwarte lub zamknięte. Po ewentualnej rozbudowie możliwych atrybutów zadania, będą mogły tu być przechowywane 
+		przeróżne zdarzenia. Encja posiada takie atrybuty:
+		\begin{itemize}
+			\item	id - klucz główny
+			\item	comment - treść ewentualnego komentarza (niewymagana)
+			\item	changeTo - pole type TaskStatus. Opcjonlne. Oznacza zmianę statusu zadania.
+			\item	date - data, kiedy miało miejsce zdarzenie
+		\end{itemize}
+		Posiada także powiązania z takimi encjami:
+		\begin{itemize}
+			\item	User - użytkownik, które dokonał akcji
+			\item	Task - zadanie, którego dotyczyła akcja
+		\end{itemize}
+
+	\item	\begin{verbatim}WorkReport\end{verbatim} Raport z pracy. Na razie jest to tylko liczba godzin spędzonych nad zadaniem. Atrybuty to 
+		identyfikator, data i liczba godzin. Dodatkowo istnieją odniesienia do innych encji:
+		\begin{itemize}
+			\item	Task - zadanie, nad którym pracował użytkownik zgłaszający raport
+			\item	Contributor - pracownik projektu, który pracował nad zadaniem
+		\end{itemize}
+\end{itemize}
+
+\subsection{Metody modeli}
+Każdy model posiada statyczne publiczne pole ,,find'', które słóży do formułowania zapytać zwracających obiekty klasy danej encji.\\
+Każdy model posiada standardowy zestaw funkcji:
+\begin{itemize}
+	\item	all - statyczna metod, zwracająca wszystkie wpisy tego typu
+	\item	create - statyczna metoda, zapisująca w bazie obiekt podany jako parametr
+	\item	remove - statyczna metoda, usuwa obiekt o podanym id
+	\item	findById - statyczna metoda, odszukuje obiekt po identyfikatorze
+\end{itemize}
+Część modeli posiada także funkcje ,,toJsonObject'' oraz ,,simpleJson'', które są nam potrzebna na użytek komunikacji z graficznym interfejsem 
+pisanym w jQuery. \\
+Niektóre modele mają także pewne funkcje o wyższym poziomie abstrakcji, przerzucające część logiki biznesowej na modele:
+
+\begin{verbatim}MileStone\end{verbatim}
+\begin{itemize}
+	\item	tasksCount(TaskStatus status) -- liczba zadań w tym kamieniu milowym, o podanym statusie
+	\item	openedTasksCount() -- liczba otwartych zadań
+	\item	closedTasksCount() -- liczba zamkniętych zadań
+\end{itemize}
+
+\begin{verbatim}Project\end{verbatim}
+\begin{itemize}
+	\item	activeContributors() -- aktywni pracownicy, czyli o statusie ADMIN lub CONTRIBUTOR
+	\item	contributorByUser(User user) -- encja pracownika tego projektu dla podanego użytkownika
+	\item	allTasks(String mileStoneId, String statusId,
+String contributorId, String priorityId, String taskTypeId,
+String creatorId, String sorting) -- metoda zwracająca zadania posortowane i przefiltrowane według podanych wzorców.
+	\item	findByName(String name, User user) -- statyczna metoda zwracająca projekt o podanej nazwia dla podanego użytkownika. Przydaje się, 
+		aby sprawdzać, czy dany użytkownik nie ma już projektu o takiej nazwie.
+\end{itemize}
+
+\begin{verbatim}Task\end{verbatim}
+\begin{itemize}
+	\item	findByTaskNumber(long projectId, long taskNumber) -- statyczna metoda wyszukująca po numerze porządkowym
+	\item	prepereTaskNumber() -- przydziala numer porządkowy, sprawdzając numer ostatniego zadania w projekcie
+\end{itemize}
+
+\begin{verbatim}User\end{verbatim}
+\begin{itemize}
+	\item	authenticate(String login, String password) -- statyczna metoda, sprawdzająca poprawność podanych danych do uwierzytelniania
+	\item	contributedProjects() -- projekty, w których pracuje użytkownik
+	\item	contributesAt(Project project) -- sprawdza, czy użytkownik jest pracownikiem podanego projektu
+	\item	contributions(Project project) -- zwraca listę encji, reprezentujących udział w danym projekcie
+	\item	uniqueContribution(Project project) - zwraca to co wyżej, ale unikalny wynik (w bazie możemy mieć tylko jeden obiekt dla danego 
+		użytkownika i danego projektu - prara unikalna).
+\end{itemize}
+
+
 
 \section{Bezpieczeństwo aplikacji - pakiet security}
 
