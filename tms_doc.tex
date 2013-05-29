@@ -1394,8 +1394,88 @@ Wykorzystamy również szereg bibliotek pomocniczych
 	\item	High Charts JS - kolejna biblioteka oparta na JavaScript. Także posiada możliwość interaktywnego ładowania danych technologią AJAX.
 \end{itemize}
 
-\subsection{Struktura widoków}
+\subsection{Struktura widoków -- pakiet views}
+Widoki są plikami w formacie *.scala.html. Są więc źródłami w języku Scala i są kompilowane do plików class. Mają genryczną strukturę. Widoki 
+niższego rzędu są generowane poprzez stworzeniu widoku wyższego rzędu z dodaną nową (bardziej szczegółową) treścią. Tak wygląda struktura widoków:
 
+\begin{itemize}
+	\item	main.scala.html
+	\begin{itemize}
+		\item	login.scala.html
+		\item	register.scala.html
+		\item	index.scala.html
+		\begin{itemize}
+			\item	milestoneSite.scala.html
+			\item	projects.scala.html
+			\item	taskSite.scala.html
+			\item	projectMain.scala.html
+			\begin{itemize}
+				\item	contributors.scala.html
+				\item	milestones.scala.html
+				\item	tasks.scala.html
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+	\item	header.scala.html
+	\item	loginStyles.scala.html
+	\item	mainStyles.scala.html
+\end{itemize}
+
+Opiszemy dokładniej, jakie znaczenie ma każdy z tych plików.
+
+\begin{enumerate}
+	\item main.scala.html -- jest najwyżej w hierarchii. Tak wygląda nagłówek pliku, który jest w pewnym sensie ,,konstruktorem'':
+		\begin{verbatim}@(title: String, scripts: Html = Html(""), styles: Html = Html(""))(content: Html)\end{verbatim}
+		Oznacza to, że obowiązkowymi parametrami są title(tytuł strony) oraz content (zawartość html). Nieobowiązkowe są skrypty i style. 
+		W tym pliku znajduje się sekcje ,,head''.
+	\item  	login.scala.html -- jest to widok logowania się do systemu. Przyjmuje takie parametry.
+		\begin{verbatim}@(loginform: Form[Application.Login])\end{verbatim} 
+		Wymaga podania formularza Form. Używa własnych styli css (loginStyles). Głównym elementem jest właśnie formularz. Dodatkowo, okienko 
+		formularza zawiera komunikaty o błędach lub udanych akcjach (flash).
+	\item	register.scala.html -- bardzo podobny widok do poprzedniego:
+		\begin{verbatim}@(loginform: Form[Application.Register])\end{verbatim} 
+		Tym razem otrzymujemy formularz, ale dla obiektu Register. Podobnie informujemy o różnych błędach w znacnziku klasy ,,alert-error''. 
+	\item	index.scala.html -- typowy generyczny widok:
+		\begin{verbatim}@(active:String, scripts: Html = Html(""))(content: Html)\end{verbatim}
+		Parametr active określa nazwę aktywnego komponentu w górnym pasku ,,navbar''. Ten widok składa się właśnie z tego paska oraz z 
+		wstawionej pod nim treści (parametr content).
+	\item	milestoneSite.scala.html -- Strona szczegółowa kamienia milowego.
+		\begin{verbatim}@(milestone: MileStone)\end{verbatim}
+		Argumentem jest kamień milowy, którego szczegółowe dane wyświetlamy.
+	\item	taskSite.scala.html -- Strona szczegółowa zadania
+		\begin{verbatim}@(task: Task)\end{verbatim}
+		Argumentem jest obiekt zadania. U góry strony wyświetlamy różne szczegóły dotyczące zadania. Z lewej strony, na dole widoku, ciągnie 
+		się lista obiektów HistoryEvent (elementów historii). Z prawej strony, pod detalami zadania, widzimi formularz wysyłania komentarzy.
+		Jeszcze niżej formularz raportowania godzin pracy, a pod nim tabelkę jTable z raportami z pracy nad tym zadaniem. Tabelka nie ma 
+		możliwości dodawania, edycji ani usuwania. Biblioteka jTable jest tu zastosowana przede wszystkim, aby pozostało to wizualnie 
+		spójne z innymi tabelkami.
+	\item	projects.scala.html -- strona z projektami użytkownika. Można tu dodawać nowe projekty i podglądać istniejące.
+		\begin{verbatim}@(projectForm: Form[Project], ownedProjects: List[Project], contribProjects: List[Project])\end{verbatim}
+		Jednym z argumentów jest formularz projektu. Inne to listy projektów: tych, których użytkownik jest właścicielem (ownedProjects) 
+		oraz tych, w których zwyczajnie uczestniczy (contribProjects). Wciśnięcie przycisku ,,Add new project'' powoduje pojawienie się 
+		dynamicznie formularza dodawania projektu. Wpisujemy tam nazwę oraz opcjonalny opis.
+	\item	projectMain.scala.html -- generyczny widok projektu:
+		\begin{verbatim}@(active:String, project: Project, scripts: Html = Html(""))(content: Html=Html(""))\end{verbatim}
+		Zawiera pasek nawigacyjny projektu (Tasks, Mile Stones, Contributors, Graphs). Parametr active wskazuje, który element paska 
+		nawigacyjnego będzie podświetlony. Argument project to projekt, którego strona ma być renderowana. Argument scripts jest przekazywany 
+		z widoków niższego poziomu. Argmuent content to treść html wpisywana poniżej paska nawigacyjnego. Można tam wstawić jedą z następujących  			stron.
+	\item	contributors.scala.html -- tabelka z członkami projektu. Argumentem jest projekt:
+		\begin{verbatim}@(project: Project)\end{verbatim}
+		Strona zawiera jedynie tabelkę jTable z możliwością dodawania, edycji oraz usuwania. Dodając użytkownika, możemy wybrać jego rolę.
+	\item	milestones.scala.html -- tabelka z kamieniami milowymi projektu. Argumentem jest projekt:
+		\begin{verbatim}@(project: Project)\end{verbatim}
+		Głównym elementem jest interaktywna tabelka. Poza podstawowymi operacjami, zawiera kilka dodatkowych elementów pisanych w JavaScript. 
+		W jeden kolumnie tabelki widzimy pasek postępu zadań. Jeśli minął już termin realizacji zadania, pasek postępu jest czerwony (o ile 
+		nie wszystkie zadania zostałyjeszcze zrobione).
+	\item	tasks.scala.html -- tabelka z zadanaimi projektu. Argumentem jest projekt:
+		\begin{verbatim}@(project: Project)\end{verbatim}
+		Głównym elementem jest interaktywna tabelka jTable. Tabelka zawiera trochę funkcji w JavaScript. Funkcje te zamieniają niektóre elementy 
+		tekstowe na obrazki, etykiety oraz ikony. Dzięki temu wszystko lepiej wygląda i można szybciej wizualnie odróżniać elementy. Również 
+		w wypadku daty realizacji zadania został wprowadzony element graficzny - jeśli termin upłynął a zadanie nie jest zamknięte, data świeci 
+		się na czerwono
+	\item	Pozostałem pliki są pomocnicze. Mogą w zasadzie także być wydzielone do zasobów statycznych w katalogu ,,public''.
+	
+\end{enumerate}
 
 %\appendix
 %\chapter*{Zawartość płyty CD}
