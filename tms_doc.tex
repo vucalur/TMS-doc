@@ -957,6 +957,212 @@ String creatorId, String sorting) -- metoda zwracająca zadania posortowane i pr
 		użytkownika i danego projektu - prara unikalna).
 \end{itemize}
 
+\section{Kontrolery - logika biznesowa}
+
+Pakiet ,,controllers’’ to moduł odpowiedzialny za logikę biznesową i interakcję z użytkownikiem poprzez zapytania i odpowiedzi HTTP.
+Jest to typowy element wzorca ,,Model-View-Controller’’ z dostępem do warstwy danych (pakiet models)
+oraz sterujący interakcją z widokiem (pakiet views).
+Każdy kontroller musi rozszerzać klasę play.mvc.Controller a wynik zwracany przez mateody
+kontrolerów to play.mvc.Result.
+Metody naszych kontrolerów są na razie statyczne (tak domyślnie jest to w Play’u), ale można
+to bardzo łatwo zmienić, angażując dowolny mechanizm Dependency Injection.
+W dalszej fazie projektu warto zatem zastosować jakiś kontener IoC, najprędzej byłby to Spring.
+Klasy kontrolerów bądź ich metoda są oznaczone zestawem adnotacji:
+\begin{itemize}
+    \item    @Security.Authenticated(Secured.class) - sprawdza, czy istnieje kontekst logowania,
+czyli czy w sesji użytkownika jest zapisany jego login. Jeśli nie, użytkownik nie ma dostępu
+do metoda kontrolera i jest przekierowany do do strony zdefiniowanej w konfiguracji
+mechanizmu Security. Adnotacja może dotyczyć klasy albo metody.
+\item    @Restrict(@Group(,,ROLE")) - podobnie, jeśli użytkownik nie posiada opisanej
+    roli (ADMIN lub CONTRIBUTOR), nie zostanie dopuszczony do tej akcji.
+    Adnotacja może dotyczyć klasy albo metody.
+\end{itemize}
+
+\subsection{Kontroler Application}
+Jest to podstawowy kontroler, które nie obejmuje logiki biznesowej, ale jest swego rodzaju bramą
+do systemu. Posiada metody logowania zakładanie kont itp. Cały kontroler jest oznaczony
+adnotacją @Security.Authenticated(Secured.class), ponieważ trzeba być zalogowanym,
+aby tu się znaleźć. Jednak większość metod nie wymaga żadnej roli w projekcie,
+ponieważ są to prywatne widoki i metody użytkownika. Metody te są następujące:
+\begin{itemize}
+    \item    public static Result index() -- przekierowuje do głównej strony użytkownika.
+        Jest to strona z jego projektami. Jeśli nie jest zalogowany, to mechanizm
+        Security przeniesie go do strony logowania. Zatem zawartość strony
+        ,,index’’ zależy od tego, czy użytkownik jest zalogowany.
+    \item    public static Result login() -- przekierowuje do strony logowania, czyszcząc
+        wcześniej sesję użytkownika (w tym kontekst logowania).
+    \item    public static Result authenticate() -- metoda uwierzytelniania. Odczytuje
+        formularz logowania (filledLoginForm). Sprawdza, czy nie ma błędów
+        (np. nie wszystkie wymagane pola zostały podane). Sprawdza następnie
+        poprawność podanych danych (metodą User.authenticate). Jeśli formularz
+        miał błędy lub dane były niepoprawne, wykonuje metodę reject na obiekcie
+        filledLoginForm i podaje filledLoginForm jako parametr renderowania strony
+        logowania. Dzięki temu widok wyświetli informację podaną jako parametr
+        metody reject. Jeśli uwierzytelnianie powiodło się, zapisujemy kontekst
+        logowania w sesji (wywołanie: session("user", login.login)) i przekierowujemy
+        użytkownika do strony z jego projektami.
+    \item    public static Result registerWindow() -- wyświetla okno do rejestracji.
+    \item    public static Result register() -- Metoda wywoływana po zatwierdzeniu formularza
+        rejestracji w przeglądarce. Metoda wiąże argumenty HTTP POST do formularza
+        i obiektu Register (lokalna, pomocnicza klasa wewnętrzna). Sprawdza, czy
+        formularz ma błędy. Błędy będą sprawdzone przez metodę validate klasy
+        Register (sprawdza, czy istnieje już użytkownik o takim loginie oraz czy
+        rubryki ,,hasło’’ oraz ,,potwierdź hasło’’ się zgadzają). Jeśli formularz
+        ma błędy, przekazujemy ten formularz do renderowanego widoku, aby
+        wyświetlić użytkownikowi, jakie błędy popełnił podczas uzupełniania formularza.
+        Jeśli błedów nie było, zapisujemy nowego użytkownika w bazie danych,
+        zapisujemy jego kontekst logowania w sesji oraz przekierowujemy go do
+        strony z jego prjektami.
+    \item    public static Result logout() -- czyścimy sesję użytkownika i przekierowujemy
+        go do strony z logowaniem.
+\end{itemize}
+
+\subsection{Kontroler Projects}
+Kontroler głównego widoku użytkownika oraz operacji na jego projektach - dodawanie nowych
+itp. Ma następujące metody:
+\begin{itemize}
+    \item    public static Result myProjects() -- zwraca projekty użytkownika. Osobno te
+        stworzone przez niego i osobne te, w których tylko uczestniczy.
+    \item    public static Result addProject() -- dodaje nowy projekt. Tworzy obiekt
+        filledForm, czyli formularz projektu. Uzupełnie następnie login użytkownika
+        w formularzu, ponieważ nie był on podany w formularzu (dzięki temu
+        przetwarzanie formularza automatycznie zwiąże referencję do obiektu
+        klasy User). Sprawdzamy następnie, czy formularz ma błędy a także, czy
+        użytkonik nie ma już czasem projektu o tej nazwie. Jeśli coś jest nie tak,
+        wykonujemy ,,reject’’ na formularzu, podając przyczynę i z powrotem
+        renderujemy stronę, z której przyszło zapytanie. Jeśli wszystko było dobrze,
+        zapisujemy w bazie nowy projekt, w flashu zapisujemy informację o idanej akcji
+        i renderujemy stronę z projektami użytkownika.
+    \item    public static Result projectMain(long id) -- przejście na stronę główną projektu
+        o podanym identyfikatorze (id).
+\end{itemize}
+\subsection{Kontroler Contributors}
+Ten kotroler działa już na konkretnym projekcie. Każda metoda przyjmuje identyfikator projektu
+(long projectId). Wszystkie motedy zwracające Result są oznaczone adnotacjami @Restrict,
+ale z podanymi różnymi rolami. Tutaj bowiem widać największą różnicę w uprawnieniach
+członków projektu. Metoda dla wszystkich członków (rola CONTRIBUTOR) to:
+\begin{itemize}
+    \item    public static Result contributors(long projectId) - renderowanie strony z
+        członkami projektu.
+    \item    public static Result list(long projectId) -- wylistowanie członków projektu. Dane są
+        zwracane w formacie JSON na potrzeby biblioteki jTable.
+\end{itemize}
+Metoda dla użytkowników z rolą ,,ADMIN’’ to:
+\begin{itemize}
+    \item    public static Result create(long projectId) -- tworzy nowy projekt. Wiąże formularz
+        z zapytania HTTP (filledForm). Sprawdza różne błędy, m.in. czy podany login
+        użytkownika występuje w systemi. Jeśli pojawiły się jakieś błędy zwracamy błąd
+        w formacie JSON (np. getJsonResultERROR("No such user in the system.")).
+        Podobnie sprawdzamy, czy podany użytkownik nie uczestniczy już w projekcie.
+        Jeśli wszystko jest dobrze, dodajemy użytkownika do projektu, zapisując w bazie
+        danych obiekt klasy Contributor, opisujący uczestnictwo w projekcie. Obiekt ma
+        automatycznie związaną z argumentów POST HTTP rolę użytkoniwka.
+    \item    public static Result update(long projectId) -- aktualizacja danych o członku
+        projektu (np. jego rola). Nie można tu zmienić roli administratora dla właściciela
+        projektu (zwracamy wówczas JSON error). Obiekt Contributor jest wiązany z
+        argumentów metody POST i wystarczy tylko wykonać ,,update’’ na tym modelu.
+    \item    public static Result delete(long projectId) -- usuwanie użytkownika z projektu.
+        Ponownie, nie można usunąć właściciela projektu. Nie usuwamy z bazy obiektów
+        Contributor, ale ustawiamy ich stan na DELETED. Dzięki temu przechowujemy
+        historię i nie tracimy potencjalnie potrzebnych danych.
+\end{itemize}
+Kontroler posiada także kilka pomocniczych metod do obsługi i konstrukcji odpowiedzi w formie
+JSON.
+\subsection{Kontroler MileStones}
+Ten kontroler odpowiada za operacje na kamieniach milowych. Jest oznaczony dwoma adnotacjami:
+\begin{itemize}
+\item    @Security.Authenticated(Secured.class) -- użytkownik musi być zalogowany.
+\item    @Restrict(@Group("CONTRIBUTOR")) -- oznacza to, że do każdej akcji tego
+    kontrolera wymagana i wystarczająca jest rola ,,członka’’ projektu. Żadne metody
+    kontrolera MileStones nie posiadają dodatkowych adnotacji odpowiedzialnych
+    za bezpieczeństwo aplikacji.
+\end{itemize}
+Ten kontroler także obsługuje zapytania pochodzące z interfejsu graficznego pisanego
+w bibliotece jTable, dlatego również będzie trochę operował formatem JSON oraz również
+zawiera metody pomocnicze do obsługi tego formatu. Metoda kontrolera są następujące:
+\begin{itemize}
+    \item    public static Result list(long projectId) -- zwraca listę kamieni milowych dla
+        danego projektu (projectId) w formacie JSON.
+    \item    public static Result create(long projectId) -- pobiera obiekt MileStone z
+formularza, nie sprawdzając błędów, ponieważ nie ma tu żadnych
+potencjalnych ostrzeżeń czy błędów. Przypisujemy kamieniowi milowemu
+projekt na podstawie projectId oraz zapisujemy datę utworzenia. Data
+realizacji, jeśli była podana, sama została związana z formularza. Zapisujemy
+kamień milowy w bazie i zwracamy komunikat o powodzeniu akcji.
+\item    public static Result update(long projectId) -- wiąże obiekt klasy MileStone z
+    argumentów metody POST HTTP. Aktualizuje jego stan w bazie i zwraca
+    komunikat o udanej akcji w formacie JSON.
+\item    public static Result delete(long projectId) -- usuwa podany kamień milowy,
+sprawdzając, czy należy on do projektu o identyfikatorze projectId. Nie usuwamy
+obiektu mileStone, jeśli przynależą do niego inne obiekty w bazie (np. zadania).
+\item    public static Result mileStoneSite(long projectId, long mileStoneId) -- renderuje
+    stronę szczegółową kamienia milowego o identyfikatorze mileStoneId,
+sprawdzając, czy należy on do podanego projektu (projectId).
+\end{itemize}
+\subsection{Kontroler Tasks}
+Ten kontroler odpowiada za akcje dokonywane na zadaniach. Tabelka z zadaniami również
+została napisana w bibliotece jTable, także również ten kontroler posługuje się odpowiedziami
+w formacie JSON. Posiada następujące metody:
+\begin{itemize}
+    \item    public static Result tasks(long projectId) -- renderuje stronę z zadaniemi z
+        podanego projektu.
+    \item    public static Result list(long projectId) -- zwraca listę zadań dla
+        danego projektu (projectId) w formacie JSON. Dodatkowo zadania są
+        posortowane i przefiltrowane według paramterów podanych w zapytaniu
+        POST HTTP. Parametr ,,jtSorting’’ jest napisanem, określającym, po czym
+        chcemy sortować i jak (np. ,,status ASC”). Parametry do filtrowania są
+        intuicyjne i nie wymagają objaśnienia.
+    \item    public static Result create(long projectId) -- pobiera obiekt Task z
+formularza, sprawdzając, czy nie ma błędów. Przypisujemy zadaniu
+projekt na podstawie projectId, zapisujemy datę utworzenia, użytkownika
+tworzącego a status automatycznie ustawiamy na OPENED. Dodatkowo,
+metoda prepereTaskNumber() przypisuje numer porządkowy zadania
+w ramach projektu. Data  realizacji, jeśli była podana, sama została związana
+z formularza. Jeśli nie, to jako datę realizacji ustawiamy datę realizacji
+powiązanego obiektu MileStone (o ile nie jest null’em). Zapisujemy
+zadanie w bazie i zwracamy komunikat o powodzeniu akcji.
+\item    public static Result update(long projectId) -- wiąże obiekt klasy Task z
+    argumentów metody POST HTTP. Aktualizuje jego stan w bazie i zwraca
+    komunikat o udanej akcji w formacie JSON.
+\item    public static Result delete(long projectId) -- usuwa podane zadanie.
+\item    public static Result mileStonesOptions(long projectId) -- zwraca listę
+    kamieni milowych w tym projekcie. Metoda jest potrzebna graficznemu
+    interfejsowi, aby wybrać kamień milowy z listy. Na początku listy
+    umieszczamy nodeUnassigned, który jest pustą wartością. Jeśli użytkownik
+    wybierze tą opcję z listy, kamień milowy dla danego zadania będzie null’em.
+\item    public static Result contributorsOptions(long projectId) -- analogicznie: zwraca
+    listę członków projektu. Na początku listy umieszczamy nodeUnassigned,
+który jest pustą wartością. Jeśli użytkownik wybierze tą opcję z listy,
+kamień milowy dla danego zadania będzie null’em.
+\item    public static Result taskSite(long projectId, long taskId) -- renderuje
+    stronę szczegółową zadania. Liczba taskId jest numerem porządkowym
+    zadania w projekcie, a nie jego identyfikatorem.
+\item    public static Result closeTask(long projectId, long taskId) -- Zamyka podane
+    zadanie. Liczba taskId jest numerem porządkowym zadania w projekcie,
+a nie jego identyfikatorem. W bazie danych zapisujemy akcję informującą,
+że zaszło takie zdarzenie (HistoryEvent) oraz zmieniamy status zadania na
+CLOSED.
+\item    public static Result reopenTask(long projectId, long taskId) -- Akcje zupełnie
+    analogiczna do powyższej (closeTask), tyle że tutaj zmieniamy status
+    na OPENED.
+\item    public static Result commentTask(long projectId, long taskId) -- Jest to podona
+    akcja do ,,closeTask’’ i ,,reopenTask’’, ponieważ tutaj także tworzymy obiekt
+    HistoryEvent i zapisujemy go w bazie danych, ale ustawiamy w nim
+jednocześnie komentarz a status zostaje null’em.
+\item    public static Result listWorkReports(long projectId, long taskId) -- zwraca listę
+    raportów pracy(WorkReport), czyli zgłoszonych godzin pracy. W przeglądarce
+    są one wyświetlane w tabelce jTable, więc i tu lista godzinek będzie przesłana
+    JSON-em. Zwrócone obiekty dotyczą zadania o numerze prządkowym (nie
+    ID) taskId w projekcie o identyfikatorze projectId.
+\item    public static Result reportHours(long projectId, long taskId) -- zgłaszanie
+    godzin pracy spędzonych nad zadaniem o numerze prządkowym (nie
+    ID) taskId w projekcie o identyfikatorze projectId. Obiekt klasy WorkReport
+    związujemy z formularza. Sprawdzamy, czy nie ma błędów i zapisujemy
+    obiekt w bazie danych, przypisując mu wcześniej atrybuty: datę, powiązane
+    zadanie oraz członka projektu.
+\end{itemize}
+
+
 
 
 \section{Bezpieczeństwo aplikacji - pakiet security}
