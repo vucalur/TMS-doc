@@ -1488,10 +1488,28 @@ Opiszemy dokładniej, jakie znaczenie ma każdy z tych plików.
 \chapter{Testy systemu}
 
 \section{Testy walidacyjne}
-Scenariusze testowe...
+Przygotowane przez nas testy walidacyjne obejmują zestaw scenariuszy dowodzących, że system spełnia wymagania i założenia. 
+Opiszemy, jakie kroki należy wykonać, aby uznać, że dana funkcjonalność jest spełniona. Zwrócimy uwagę na sytuacje charakterystyczne i wyjątkowe. 
+Część trych testów została zautomatyzowana. Część automatyczna jest opisana w rozdziale ,,Testy weryfikacyjne''.
+
+\subsection{Możliwość zalogowania się}
+\subsection{Nieprawidłowe logowanie}
+\subsection{Możliosć rejestracji}
+\subsection{Błędy rejestracji}
+\subsection{Ochrona stron przed niezalogowanym użytkownikiem}
+\subsection{Ochrona stron przed użytkownikami o niewystarczających uprawnieniach}
+\subsection{...}
 
 \section{Testy weryfikacyjne}
-Testy jednostkowe, testy integracyjne...
+Automatyczne testy weryfikacyjne obejmują dwa obszary:
+\begin{enumerate}
+	\item	testy jednostkowe -- testy pojedynczych klas, zwłaszcza kontrolerów (pakiet controllers). W Play! Framework najłatwiej 
+		jest testować kontrolery w środowisku testowym aplikacji z testową bazą danych i takie rozwiązanie wykorzystujemy.
+	\item	testy integracyjne -- testy automatyczne Selenium. Wykorzystują przeglądarkę Firefox. Na bieżąco obserwujemy działanie 
+		testów w przeglądarce. Jest to sposób testowania integracji modułów przez badanie tego, co ostatecznie trafia do użytkownika.
+\end{enumerate}
+\subsection{Testy jednostkowe}
+\subsection{Testy integracyjne}
 
 %\appendix
 %\chapter*{Zawartość płyty CD}
