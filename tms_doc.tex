@@ -756,6 +756,8 @@ Warstwa prezentacji dzieli się dalej na warstwy Widoku i Kontrolera.
 \noindent
 W aplikacji play kod odpowiadający tym trzem warstwom znajduje się z katalogu app.
 
+
+\newpage
 \section{Cykl życia requestu HTTP}
 
 Play framework jest w pełni bezstanowy -- zorientowany tylko na cykl REquest-Response.
@@ -791,6 +793,7 @@ views orac controllers. \\
 \label{fig:tasksArch}
 \end{figure}
 
+\newpage
 Aplikacja ma następującą strukturę katalogów:
 
 \begin{itemize}
@@ -1261,6 +1264,8 @@ Do poprawnego skonfigurowania mechanizmu konieczne było napisanie kilku klas i 
 	Implementuje interfejs be.objectify.deadbolt.core.models.Role i jego metodę \begin{verbatim}getName()\end{verbatim} Wartość zwracana przez tą metodę jest podstawą dla filtrów \begin{verbatim}@Restrict\end{verbatim}, których możemy używać w kontrolerach:
 	\item	controllers.*  - w tym pakiecie wykorzystujemy już to wszystko, co poprzednio zaimplementowaliśmy. Możemy dodawać na przykład adnotacje \begin{verbatim}@Restrict\end{verbatim} dla klasy kontrolera bądź dla jego metod. Przykład wykorzystania: \begin{verbatim}@Restrict(@Group("CONTRIBUTOR")) \end{verbatim}
 \end{itemize}
+
+\newpage
 \section{Interfejs graficzny}
 
 \subsection{Projekt interfejsu graficznego}
@@ -1592,14 +1597,14 @@ Poniższe screeny wraz z komentarzami przedstawiają działanie aplikacji.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{images/app/1.png}
+\includegraphics[scale=0.38]{images/app/1.png}
 \caption{Panel logowania do systemu}
 \label{fig:app_login}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{images/app/2.png}
+\includegraphics[scale=0.43]{images/app/2.png}
 \caption{Rejestracja nowego użytkownika --- obecnie nie ma żadnych ograniczeń -- mechanizm rejestracji można dalej udoskonalić}
 \label{fig:app_register}
 \end{figure}
@@ -1641,14 +1646,14 @@ Poniższe screeny wraz z komentarzami przedstawiają działanie aplikacji.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{images/app/8.png}
+\includegraphics[scale=0.45]{images/app/8.png}
 \caption{\textit{Burndownchart} obrazujący postęp prac oraz opóźnienia w realizacji projektu}
 \label{fig:app_login}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{images/app/9.png}
+\includegraphics[scale=0.45]{images/app/9.png}
 \caption{Przykładowa walidacja uprawnień do wykonywania akcji przez użytkownika}
 \label{fig:app_RBAC}
 \end{figure}
@@ -1661,7 +1666,7 @@ Przygotowane przez nas testy walidacyjne obejmują zestaw scenariuszy dowodzący
 Opiszemy, jakie kroki należy wykonać, aby uznać, że dana funkcjonalność jest spełniona. Zwrócimy uwagę na sytuacje charakterystyczne i wyjątkowe. 
 Część trych testów została zautomatyzowana. Część automatyczna jest opisana w rozdziale ,,Testy weryfikacyjne''.
 
-\subsection{Logowanie się}
+\subsection{Logowanie}
 \subsubsection{Poprawne logowanie}
 \begin{enumerate}
 	\item	Użytkownik tworzy konto w systemie rejestrując się.
@@ -1795,6 +1800,8 @@ Napisano testy jednostkowe dla metod i klas odpowiedzialnych między innymi za:
 	\href{http://twitter.github.io/bootstrap/}{Twitter Bootstrap}
 \bibitem{ebean}
 	\href{http://www.avaje.org/}{Avaje Ebean}
+\bibitem{mvc}
+	\href{http://stackoverflow.com/questions/2056/what-are-mvp-and-mvc-and-what-is-the-difference}{Interesujący wątek na Stackoverflow obrazujący różnice pomiędzy MVC a MVP}
 
 \end{thebibliography}
 
