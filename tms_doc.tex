@@ -32,7 +32,7 @@
 \begin{large}
   \begin{tabularx}{\textwidth}{lXc}
     \textit{Kierunek, rok studiów} &  & \textit{ } \\
-    \hspace{3em}Informatyka, rok III &  &  \\
+    \hspace{3em}Informatyka, rok III &  &  \\fram
     \textit{Przedmiot} &  & \\
 	\multicolumn{3}{l}{\hspace{3em}Inżynieria Oprogramowania} \\
     \textit{Prowadzący przedmiot} &  & \textit{rok akademicki:} \hfill 2012/2013\\
@@ -290,10 +290,6 @@ ze względu na:
 	\item	bardzo dobra kompatybilność z frameworkami ORM
 	\item	dopracowane i bogate w funkcjonalności narzedzie graficzne do bezpośredniego zarządzania bazą - pgadmin3
 \end{itemize}
-\subsubsection{Framework ORM}
-Zostanie wykorzystany interfejs JPA, zapięty “pod maską” do fremeworku
-konkretnego (JPA providera) - Hibernate. Głównie ze względu na wysoką popularność
-(co za tym idzie pomoc community), wydajność oraz dojrzałość rozwiązania.
 
 \subsection{Serwer aplikacji - kandydaci}
 \begin{itemize}
@@ -360,7 +356,7 @@ maszynie Javy) oraz dla samej Javy. Zdecydowaliśmy się, póki co, na tę drug�
 
 \subsection{Baza danych}
 Wybraliśmy bazę danych PostgreSQL ze względu na jej bardzo dobre opinie. Jest uważana za najlepszy darmowy system zarządzania 
-bazą danych. Ponadto, w fazie deweloperskiej będziemy korzystać z bazy danych H2, bazy przetrzymującej dane w pamięci. Play! 
+bazą danych. Jednakże, w fazie deweloperskiej będziemy korzystać z bazy danych H2, bazy przetrzymującej dane w pamięci. Play! 
 Framework zapewnia bardzo łatwe przełączanie między rzeczywistą bazą danych a atrapą H2. Dodatkowo, bazy danych H2 będziemy 
 używać do testów automatycznych.
 
@@ -373,7 +369,7 @@ będziemy potrzebować głównie komponentów graficznych. I tak zdecydowaliśmy
 		milowymi.
 	\item	Highcharts JS - JavaScript'owa biblioteka do prezentacji danych na wykresach. Dostarcza wiele rodzajów 
 		wykresów, także interaktywnych. Przydadzą się nam one do prezentowania analiz pracy w projekcie.
-	\item	Twitter Bootstrap - biblioteka komponentów html, css o JavaScript do szybkiego tworzenia ładnych i nowoczesnych 
+	\item	Twitter Bootstrap - biblioteka komponentów HTML, CSS oraz JavaScript do szybkiego tworzenia ładnych i nowoczesnych 
 		interfejsów webowych.
 \end{itemize}
 
@@ -414,7 +410,7 @@ Pozwoli nam to na lepszą estymację czasu potrzebnego na zrealizowanie dalszych
 jak i czasu realizacji całego przedsięwzięcia.
 \\
 \\
-Zakładając, że projekt będzie trwał do 15-25 czerwca, przyjęliśmy na początku następujący harmonogra:
+Zakładając, że projekt będzie trwał do 15-25 czerwca, przyjęliśmy na początku następujący harmonogram:
 \begin{itemize}
 	\item	29/04/13 - logowanie i rejestracja
 	\item	06/05/13 - panel użytkownika
@@ -489,7 +485,7 @@ inne zespoły, bądź przez nas w ramach innych przedmiotów. W skrócie:
 	\item	hierarchia tasków (rodzic, dziecko)
 	\item	estymaty czasowe, wykresy:
 			\begin{itemize}
-				\item	\href{http://www.youtube.com/watch?v=XU0llRltyFM&t=4m29s}{Burndown chart}
+				\item	\href{http://www.youtube.com/watch?v=XU0llRltyFM&t=4m29s}{Burndown chart} (pierwszy prototyp zrealizowany)
 				\item	monitoring ilości tasków - podział na otwarte i zamknięte (analogcznie jak jest to zrealizowane w narzędziu JIRA:
 						\href{https://confluence.atlassian.com/download/attachments/185729486/gadgets-charting-created-vs-resolved.png?version=2&modificationDate=1350347163816&api=v2}{link})
 			\end{itemize}
@@ -679,7 +675,9 @@ Wizja funkcjonalność dla pierwszej iteracji:
 \end{itemize}
 
 \subsubsection{Cykl życia tasków}
-Jest stały i określony z góry przez twórców aplikacji
+\noindent
+Jest stały i określony z góry przez twórców aplikacji.\\
+Jako możliwość rozbudowy można dodać możliwość ustanawiania cyklu życia tasków per projekt.
 
 \subsubsection{Prawa dostępu}
 \begin{itemize}
@@ -717,6 +715,68 @@ Będą dostępne następujące widoki:
 	\item	Widok przepracowanych godzin przez danego pracownik projektu
 \end{itemize}
 
+
+\chapter{Wzorzec MVC w frameworku Play}
+
+\section{Ogólny zarys}
+Aplikacje w frameworku Play działają w oparci o wzorzec MVC zastosowany do architektury aplikacji webowych.
+
+Zastosowane podejście rozdzila aplikację na 2 oddzielne warstwy:
+\begin{itemize}
+	\item	warstwa Prezentacji
+	\item	warstwa Modelu danych
+\end{itemize}
+Warstwa prezentacji dzieli się dalej na warstwy Widoku i Kontrolera.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{images/diagrams_mvc.png}
+\caption{Wysokopoziomowa obsługa zdarzenia HTTP w architekturze MVC}
+\label{fig:mvc_1}
+\end{figure}
+
+\begin{description}
+	\item[Model]	Model jest obiektem encyjnym reprezentującym informacje, na których operuje warstwa biznesowa aplikacji.
+		Logika biznesowa nadaje znaczenia gołym danym (np: wyliczanie kiedy dany pracownik ma urodziny,
+		wyliczanie kwoty podatku, czy też kosztów przewozu zakupów w koszyku).\\
+		Pomimo iż większość aplikacji używa baz danych jako mechanizmu utrwalania danych, architektura MVC nie wymusza,
+		nie uzależnia się od takiego podejścia --- to jak dane sa pozyskiwane pod maską jest odgrodzone od samego MVC poprzez interfejs modelu.
+	\item[Widok]	Widok renderuje model, tj. przetwarza na format wygodny do interakcji w interfejsie użytkownika.\\
+		Ponieważ brak silnego powiązania (jeden z postulatów architektury MVC) relacji widok $\longleftrightarrow$ model,
+		może istnieć wiele niezależnych od siebie widoków przeznaczonych do różnych celów.\\
+		W aplikacji webowej model jest zazwyczaj transformowanych do formatu ,,weobwego'', np: HTML, XML, JSON.
+	\item[Kontroler]	Kontroler reaguje na zdarzenia (akcje użytkownika) i procesuje je. Dodatkowo może wywoływać akcje
+		na modelu i żądać ich utrwalenia.\\
+		W aplikacji zdarzeniami sa najczęściej metody HTTP, w szczególności GET oraz POST.\\
+		Kontroler nasłuchuje zdarzeń HTTP, wyciąga z nich odpowiednie dane, np": parametry, nagłówkim, ciała HTTP,
+		oraz pobiera dane/wywołuje odpowiednie akcje na warstwie modeli.
+\end{description}
+
+\vspace*{1cm}
+\noindent
+W aplikacji play kod odpowiadający tym trzem warstwom znajduje się z katalogu app.
+
+\section{Cykl życia requestu HTTP}
+
+Play framework jest w pełni bezstanowy -- zorientowany tylko na cykl REquest-Response.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{images/diagrams_path.png}
+\caption{Obsługa przez aplikację requestu HTTP}
+\label{fig:mvc_2}
+\end{figure}
+
+
+Opis powyższego schematu --- Ścieżka przejścia requestu HTTP:
+\begin{enumerate}
+	\item	Zwykły request HTTP wydawany przez klienta jest przejmowany przez aplikację.
+	\item	Komponent Router znajduje najbardziej pasujący do requestu wzorzec, który mógłby
+		obsłużyć dany request. Metoda kontrolera definiująca dany wzorzec jest wybierana.
+	\item	Kod danej metody jest wykonywany.
+	\item	Jeśli jest potrzeba zwrócenia poszczególnego widoku, wywoływany jest renderer.
+	\item	Rezultat metody jest zwracany jako HTTP response.
+\end{enumerate}
 
 \chapter{Architektura systemu}
 
@@ -847,7 +907,7 @@ System zawiera następujące modele (widoczne na diagramie ER):
 			\begin{itemize}
 				\item	TASK
 				\item	DEFECT
-				\item	ENHENCEMENT
+				\item	ENHANCEMENT
 				\item	DOCUMENTATION
 				\item	CONFIGURATION
 				\item	QUESTION
@@ -1477,13 +1537,122 @@ Opiszemy dokładniej, jakie znaczenie ma każdy z tych plików.
 	
 \end{enumerate}
 
-\chapter{Instrukcja obsługi}
+\chapter{Instrukcja uruchamiania}
+\section{Wymagane oprogramowanie}
+\begin{itemize}
+	\item	Java 1.7 lub nowsza
+	\item	Play 2.1.1
+	\item	PostgreSQL 9.1 lub nowszy
+	\item	Przeglądarka internetowa
+	\item	(dev) IDE dobrze wspierające framework Play, np: Intellij, Eclipse
+\end{itemize}
 
-\section{Instrukcja deweloperska}
+\section{Baza danych}
+Należy utworzyć bażę danych PostgreSQL. Aplikacja będzie próbowała łączyć się z bazą określoną
+nastepującymi parametrami:
+\begin{verbatim}
+# PostgreSQL configuration :
+db.default.driver=org.postgresql.Driver
+db.default.url="jdbc:postgresql://localhost:5432/tms"
+db.default.user=postgres
+db.default.password=1234
+\end{verbatim}
 
-\section{Instrukcja uruchomienia i zarządzania}
+Parametry te można zmienić w pliku \kod{conf/application.conf}. \de
 
-\section{Poradnik użytkownika}
+Jeśli baza PostreSQL nie zostanie utworzona aplikacja utworzy bazę pamięciową H2 ---
+pod warunkiem, że odkomentujemy zastępujące linie:
+\uwaga{Po zamknięciu serwera dane z bazy H2 są tracone.}
+\begin{verbatim}
+# H2 configuration :
+# db.default.driver=org.h2.Driver
+# db.default.url="jdbc:h2:mem:play"
+\end{verbatim}
+
+\section{Uruchamianie serwera lokalnie}
+Uruchamiamy serwer aplikacji wydając w głównym katalogu komendę \kod{play run}.\\
+Aplikacja się uruchamia a następnie nasłuchuje na porcie 9000 protokołu HTTP.\\
+
+
+\section{Uruchamianie aplikacji w przeglądarce}
+Podczas uruchamiania aplikacji na środowisku lokalnym aplikacja nie zajmuje żadnego kontekstu
+--- aby przejść do strony głównej należy w przeglądarce wybrać adres \kod{http://localhost:9000/}\de
+
+W przypadku braku danych w bazie będzie ją należało spopulować --- należy wybrać ,,Apply this script now!''
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{images/run.png}
+\caption{Pierwsze uruchomienie - populowanie bazy danych}
+\label{fig:populate}
+\end{figure}
+
+
+\chapter{Działanie aplikacji}
+Poniższe screeny wraz z komentarzami przedstawiają działanie aplikacji.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/app/1.png}
+\caption{Panel logowania do systemu}
+\label{fig:app_login}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{images/app/2.png}
+\caption{Rejestracja nowego użytkownika --- obecnie nie ma żadnych ograniczeń -- mechanizm rejestracji można dalej udoskonalić}
+\label{fig:app_register}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/app/3.png}
+\caption{Panel zmiany hasła użytkownika}
+\label{fig:app_passwd}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{images/app/4.png}
+\caption{Widok projektów zalogowanego użytkownika}
+\label{fig:app_projects}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{images/app/5.png}
+\caption{Lista tasków w danym projekcie}
+\label{fig:app_tasks}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{images/app/6.png}
+\caption{Statystyki zaraportowanych do danego zadania godzin pracy}
+\label{fig:app_hours}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.46]{images/app/7.png}
+\caption{Podgląd kamieni milowych projektu}
+\label{fig:app_milestones}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/app/8.png}
+\caption{\textit{Burndownchart} obrazujący postęp prac oraz opóźnienia w realizacji projektu}
+\label{fig:app_login}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/app/9.png}
+\caption{Przykładowa walidacja uprawnień do wykonywania akcji przez użytkownika}
+\label{fig:app_RBAC}
+\end{figure}
+
 
 \chapter{Testy systemu}
 
@@ -1492,13 +1661,102 @@ Przygotowane przez nas testy walidacyjne obejmują zestaw scenariuszy dowodzący
 Opiszemy, jakie kroki należy wykonać, aby uznać, że dana funkcjonalność jest spełniona. Zwrócimy uwagę na sytuacje charakterystyczne i wyjątkowe. 
 Część trych testów została zautomatyzowana. Część automatyczna jest opisana w rozdziale ,,Testy weryfikacyjne''.
 
-\subsection{Możliwość zalogowania się}
-\subsection{Nieprawidłowe logowanie}
-\subsection{Możliosć rejestracji}
-\subsection{Błędy rejestracji}
+\subsection{Logowanie się}
+\subsubsection{Poprawne logowanie}
+\begin{enumerate}
+	\item	Użytkownik tworzy konto w systemie rejestrując się.
+	\item	Wybierając następnie opcję logowania wpisujemy podane wcześniej login i hasło.
+	\item	Aplikacja powinna przekierować użytkownika na stronę z jego projektami.
+\end{enumerate}
+
+\subsubsection{Nieprawidłowe logowanie --- złe hasło}
+\begin{enumerate}
+	\item	Użytkownik tworzy konto w systemie rejestrując się.
+	\item	Wybierając następnie opcję logowania wpisujemy podane wcześniej login i oraz inne hasło.
+	\item	Aplikacja powinna pozostać na tej samej stronie wyświetlając tylko komunikat
+		,,Wrong login or password''
+\end{enumerate}
+
+\subsubsection{Nieprawidłowe logowanie --- nieistniejący użytkownik}
+\begin{enumerate}
+	\item	Użytkownik tworzy konto w systemie rejestrując się.
+	\item	Wybierając następnie opcję logowania wpisujemy login nieistniejący w systemie i oraz dowolne hasło.
+	\item	Aplikacja powinna pozostać na tej samej stronie wyświetlając tylko komunikat
+		,,Wrong login or password''
+\end{enumerate}
+
+
+\subsection{Rejestracja}
+\subsubsection{Rejestracja poprawna}
+\begin{enumerate}
+	\item	Użytkownik tworzy konto w systemie podając nieistniejący login \ldots
+	\item	\ldots oraz podając 2 razy to samo hasło.
+	\item	Aplikacja powinna przekierować użytkownika na listę jego projektów
+\end{enumerate}
+
+\subsubsection{Rejestracja niepoprawna --- istniejący login}
+\begin{enumerate}
+	\item	Użytkownik tworzy konto w systemie podając istniejący login \ldots
+	\item	\ldots oraz podając dowolne 2 hasła
+	\item	Aplikacja powinna pozostać na tej samej stronie wyświetlając tylko komunikat
+		,,Login already in use''
+\end{enumerate}
+
+\subsubsection{Rejestracja niepoprawna --- źle powtórzone hasło}
+\begin{enumerate}
+	\item	Użytkownik tworzy konto w systemie podając nieistniejący login \ldots
+	\item	\ldots oraz podając 2 różne hasła
+	\item	Aplikacja powinna pozostać na tej samej stronie wyświetlając tylko komunikat
+		,,Password not confirmed''
+\end{enumerate}
+
+\subsection{Ochrona przed obsługą złych metod HTTP}
+\begin{enumerate}
+	\item	Zalogowany użytkownik wpisuje w polu adresu w przeglądarce (metoda GET)
+			adres, który powinien być dostępny tylko poprzez metodę POST HTTP, np:
+			\kod{http://localhost:9000/addProject}.
+	\item	Aplikacja powinna wyświetlić błąd ,,Action not found''
+\end{enumerate}
+
+
 \subsection{Ochrona stron przed niezalogowanym użytkownikiem}
+\begin{enumerate}
+	\item	Niezalogowany użytkownik wpisuje URL, który powinien być dostępny tylko po zalogowaniu,
+		np: \kod{http://localhost:9000/projects}.
+	\item	Aplikacja powinna pozostać przekierować użytkownika na panel logowania.
+\end{enumerate}
+
 \subsection{Ochrona stron przed użytkownikami o niewystarczających uprawnieniach}
-\subsection{...}
+\subsubsection{Ochrona przed nieporzadaną zmianą swoich uprawnień na wyższe}
+\begin{enumerate}
+	\item	Użytkownik loguje się.
+	\item	Uzytkownik wybiera projekt, w którym jest tylko kontrybutorem.
+	\item	Użytkownik przechodzi do listy kontrybutorów.
+	\item	Użytkownik wybiera edycję swojego statusu w projekcie i zmienia do na administratora
+	\item	Aplikacja powinna wyświetlić błąd: ,,You are not allowed to do this.''
+\end{enumerate}
+
+\subsubsection{Ochrona przed nieporzadaną zmianą swoich uprawnień na wyższe}
+\begin{enumerate}
+	\item	Użytkownik loguje się.
+	\item	Uzytkownik wybiera projekt, w którym jest tylko kontrybutorem.
+	\item	Użytkownik przechodzi do listy kontrybutorów.
+	\item	Użytkownik wybiera dodawanie knowego kontrybutora
+	\item	Aplikacja powinna wyświetlić błąd: ,,You are not allowed to do this.''
+\end{enumerate}
+
+
+\subsection{Ochrona stron przed niepoprawnymi danymi}
+\subsubsection{Dodawanie nieistniejącego użytkownika do projektu}
+\begin{enumerate}
+	\item	Użytkownik loguje się.
+	\item	Uzytkownik wybiera projekt, w którym jest administratorem.
+	\item	Użytkownik przechodzi do listy kontrybutorów.
+	\item	Użytkownik wybiera dodawanie nowego współpracownika --= przycisk ,,Add new record''
+	\item	Jako user podajemy losowy ciąg znaków - nieistniejący login
+	\item	Aplikacja powinna wyświetlić błąd: ,,No such user in the system.''
+\end{enumerate}
+
 
 \section{Testy weryfikacyjne}
 Automatyczne testy weryfikacyjne obejmują dwa obszary:
@@ -1508,18 +1766,15 @@ Automatyczne testy weryfikacyjne obejmują dwa obszary:
 	\item	testy integracyjne -- testy automatyczne Selenium. Wykorzystują przeglądarkę Firefox. Na bieżąco obserwujemy działanie 
 		testów w przeglądarce. Jest to sposób testowania integracji modułów przez badanie tego, co ostatecznie trafia do użytkownika.
 \end{enumerate}
-\subsection{Testy jednostkowe}
-\subsection{Testy integracyjne}
 
-%\appendix
-%\chapter*{Zawartość płyty CD}
-%\begin{description}
-%	\item[plik dokuentacja.pdf]	 --- plik z tą dokumentacją (dodatkowo dokumentacja jest oddawana w formie drukowanej)
-%	\item[folder knabees]	 --- folder z kompletnym kodem źródłowym aplikacji
-%	\item[plik knabees-1.0-jar-with-dependencies.jar]	 --- plik jar zbudowanej aplikacji Javowej
-%	\item[pokaz.avi]	 --- krótki filmik demonstrujący działanie aplikacji
-%	\item[folder tests]		--- folder z danymi wejściowymi, oraz wykresami dla przeprowadzonych testów
-%\end{description}
+
+\subsection{Testy jednostkowe}
+Napisano testy jednostkowe dla metod i klas odpowiedzialnych między innymi za:
+\begin{itemize}
+	\item	logowanie (poprawne, złe hasło, puste hasło)
+	\item	rejestrację (poprawną, niepoprawną)
+\end{itemize}
+
 
 \addtocounter{page}{-1}
 
