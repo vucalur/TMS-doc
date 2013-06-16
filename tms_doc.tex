@@ -1776,6 +1776,75 @@ Napisano testy jednostkowe dla metod i klas odpowiedzialnych między innymi za:
 \end{itemize}
 
 
+
+\chapter{Podsumowanie}
+\section{Co udało się zrealizować}
+Udało nam się zaimplementować wszystkie funkcjonalności rozplanowane w charmonogramie.\\
+Relizację niektórych musieliśmy przyspieszyć, bądź zamienić kolejnością, ponieważ były
+potrzebne do realizacji innych funkcjonalności.\de
+
+Podsumowanie rzeczy zrealizowanych:
+\begin{itemize}
+	\item	Logowanie
+	\item	Prosty mechanizm rejestracji (a nie np. ręczne dodawanie użytkowników w bazie)
+	\item	Zmiana hasła
+	\item	Zakładanie nowego projektu
+	\item	Dodawanie użytkowników do projektu
+	\item	Różne uprawnienia użytkownika (również nie-właściciela) w projekcie
+	\item	Dodawanie zadań do projektu
+	\item	Walidacja uprawnień do wykonywania danej akcji
+	\item	Zestawienie godzin do poszczególnego zadania
+	\item	Wizualizacja postępu w realizacji projektu (\emph{burndown chart})
+	\item	Interaktywny widok zadań w projekcie
+	\item	Widok projektów użytkownika
+	\item	Widok kontrybutorów danego projektu
+	\item	Dodawanie kamieni milowych do projektu
+	\item	Widok kamieni milowych danego projektu
+	\item	Podstawowy cykl życia zadań:
+			\begin{itemize}
+				\item	tworzenie
+				\item	komentowanie
+				\item	logowanie godzin
+				\item	zamykanie
+				\item	otwieranie ponowne
+			\end{itemize}
+\end{itemize}
+
+
+\section{Czego nie udało się zrealizować -- wizje dalszego rozwoju projektu}
+Z niektórych wartościowych funkcjonalności musieliśmy zrezygnować.\\
+W przypadku dalszego rozwoju projektu czy to przez nasz lub przez inny zespół
+warto uzględnić poniższe mozliwości rozbudowy:
+\begin{itemize}
+	\item	Zaawansowany mechanizm rejestracji (z aktywacją wysyłaną na maila)
+	\item	Rejestracja poprzez OpenID, serwisy społecznościowe
+	\item	Deployment na chmurę
+	\item	Bardziej rozbudowany cykl życia zadań, wraz z walidacją przechodzenia pomiędzy poszczególnymi stanami
+	\item	Cykl życia zadań konfigurowalny z poziomu aplikacji ---
+			rozwiązanie takie jest dostępne zarówno w Redmine, Jira, jak i IBM Rational Team Concert
+	\item	Statystyki przepracowanych godzin przez:
+			\begin{itemize}
+				\item	Pracownika
+				\item	Zespół
+			\end{itemize}
+	\item	Generacja rozliczeń pdf/excel na podstawie przepracowanych godzin
+	\item	Integracja z zewnętrzymi serwisami - np. GitHubowe \emph{Issues}
+	\item	Integracja z repozytorium kodu ---
+			np. listowanie komitów, które dotyczyły danego zadania
+	\item	Etykiety (\emph{labels}) zadań
+	\item	Zaawansowane widoki zadań --- np. tablica Kanban z podziałem na:
+			\begin{itemize}
+				\item	nowe
+				\item	aktualnie realizowane
+				\item	do przetestowania
+			\end{itemize}
+	\item	Wysoce interaktywny interfejs tablicy Kanban -- np. Przeciąganie zadań z jednego stanu do drugiego
+	\item	Kanały RSS aplikacji
+	\item	Notyfikacje email
+\end{itemize}
+	
+	
+
 \addtocounter{page}{-1}
 
 \begin{thebibliography}{9}
